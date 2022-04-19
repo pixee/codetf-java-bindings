@@ -1,6 +1,5 @@
 package io.github.pixee.ccf;
 
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
