@@ -1,6 +1,5 @@
 package io.github.pixee.ccf;
 
-import static io.github.pixee.ccf.CCFValidator.toImmutableCopyOrEmptyOnNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
