@@ -1,6 +1,6 @@
 # Code Change Format - Java SDK
 
-This library provides domain objects for interacting with [Code Change Format](http://foo.com/) (CCF) files.
+This library provides domain objects for interacting with [Code Change Format](https://github.com/pixeeworks/ccf/) (CCF) files.
 
 # Features
 
