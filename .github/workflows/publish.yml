@@ -38,4 +38,4 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
-            target/ccf*.jar
+            target/codetf*.jar

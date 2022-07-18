@@ -1,9 +1,9 @@
-package io.github.pixee.ccf;
+package io.github.pixee.codetf;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** Describes a file extension scan report item. */
-public final class CCFFileExtensionScanned {
+public final class CodeTFFileExtensionScanned {
 
   @JsonProperty("extension")
   private final String extension;
@@ -11,9 +11,9 @@ public final class CCFFileExtensionScanned {
   @JsonProperty("count")
   private final int count;
 
-  public CCFFileExtensionScanned(
+  public CodeTFFileExtensionScanned(
       @JsonProperty("extension") final String extension, @JsonProperty("count") final int count) {
-    this.extension = CCFValidator.requireNonBlank(extension);
+    this.extension = CodeTFValidator.requireNonBlank(extension);
     if (count < 0) {
       throw new IllegalArgumentException("count must be positive integer");
     }

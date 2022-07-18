@@ -17,5 +17,5 @@ To deserialize a CodeTF file using these objects, simply deserialize with Jackso
 
 ```java
 ObjectMapper mapper = new ObjectMapper();
-CodeTFReport report = mapper.readValue(ccfFile, CodeTFReport.class);
+CodeTFReport report = mapper.readValue(codetfFile, CodeTFReport.class);
 ```

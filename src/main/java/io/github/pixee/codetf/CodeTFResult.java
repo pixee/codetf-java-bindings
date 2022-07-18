@@ -1,26 +1,26 @@
-package io.github.pixee.ccf;
+package io.github.pixee.codetf;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /** Describes an individual change result. */
-public final class CCFResult {
+public final class CodeTFResult {
 
   private final String path;
 
   private final String diff;
 
-  private final List<CCFChange> changes;
+  private final List<CodeTFChange> changes;
 
   @JsonCreator
-  public CCFResult(
+  public CodeTFResult(
       @JsonProperty("path") final String path,
       @JsonProperty("diff") final String diff,
-      @JsonProperty("changes") final List<CCFChange> changes) {
-    this.path = CCFValidator.requireNonBlank(path);
-    this.diff = CCFValidator.requireNonBlank(diff);
-    this.changes = CCFValidator.toImmutableCopyOrEmptyOnNull(changes);
+      @JsonProperty("changes") final List<CodeTFChange> changes) {
+    this.path = CodeTFValidator.requireNonBlank(path);
+    this.diff = CodeTFValidator.requireNonBlank(diff);
+    this.changes = CodeTFValidator.toImmutableCopyOrEmptyOnNull(changes);
   }
 
   public String getPath() {
@@ -31,7 +31,7 @@ public final class CCFResult {
     return diff;
   }
 
-  public List<CCFChange> getChanges() {
+  public List<CodeTFChange> getChanges() {
     return changes;
   }
 }

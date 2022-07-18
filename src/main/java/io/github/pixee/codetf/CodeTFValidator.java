@@ -1,4 +1,4 @@
-package io.github.pixee.ccf;
+package io.github.pixee.codetf;
 
 import static java.util.Collections.emptyMap;
 
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 /** Holds small utility for validating strings and immutable collections. */
-final class CCFValidator {
+final class CodeTFValidator {
 
   /**
    * Returns the given {@link String} if it passes the two requirements -- it's non-null and it's

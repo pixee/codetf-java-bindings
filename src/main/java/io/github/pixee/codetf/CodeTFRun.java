@@ -1,4 +1,4 @@
-package io.github.pixee.ccf;
+package io.github.pixee.codetf;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 /** Describes the "run" section of a CCF report. */
-public final class CCFRun {
+public final class CodeTFRun {
 
   private final String vendor;
 
@@ -17,23 +17,23 @@ public final class CCFRun {
 
   private final Long elapsed;
 
-  private final CCFConfiguration configuration;
+  private final CodeTFConfiguration configuration;
 
-  private final List<CCFFileExtensionScanned> filesScanned;
+  private final List<CodeTFFileExtensionScanned> filesScanned;
 
   private final List<String> failedFiles;
 
   @JsonCreator
-  public CCFRun(
+  public CodeTFRun(
       @JsonProperty("vendor") final String vendor,
       @JsonProperty("tool") final String tool,
       @JsonProperty("commandLine") final String commandLine,
       @JsonProperty("elapsed") final Long elapsed,
-      @JsonProperty("fileExtensionsScanned") final List<CCFFileExtensionScanned> filesScanned,
-      @JsonProperty("configuration") final CCFConfiguration configuration,
+      @JsonProperty("fileExtensionsScanned") final List<CodeTFFileExtensionScanned> filesScanned,
+      @JsonProperty("configuration") final CodeTFConfiguration configuration,
       @JsonProperty("failedFiles") final List<String> failedFiles) {
-    this.vendor = CCFValidator.requireNonBlank(vendor);
-    this.tool = CCFValidator.requireNonBlank(tool);
+    this.vendor = CodeTFValidator.requireNonBlank(vendor);
+    this.tool = CodeTFValidator.requireNonBlank(tool);
     this.commandLine = commandLine;
 
     if (elapsed <= 0) {
@@ -63,7 +63,7 @@ public final class CCFRun {
     return commandLine;
   }
 
-  public CCFConfiguration getConfiguration() {
+  public CodeTFConfiguration getConfiguration() {
     return configuration;
   }
 
@@ -71,7 +71,7 @@ public final class CCFRun {
     return failedFiles;
   }
 
-  public List<CCFFileExtensionScanned> getFilesScanned() {
+  public List<CodeTFFileExtensionScanned> getFilesScanned() {
     return filesScanned;
   }
 }

@@ -1,4 +1,4 @@
-package io.github.pixee.ccf;
+package io.github.pixee.codetf;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -17,7 +17,7 @@ final class DeserializeReportTest {
   void it_deserializes_input() throws IOException {
     String inputJson =
         "{  \"artifact\" : \"/path/to/semmle.sarif\" , \"sha1\" : \"154F\", \"vendor\" : \"semmle\"}";
-    CCFInput input = mapper.readValue(inputJson, CCFInput.class);
+    CodeTFInput input = mapper.readValue(inputJson, CodeTFInput.class);
     assertThat(input.getArtifact(), equalTo("/path/to/semmle.sarif"));
     assertThat(input.getSha1(), equalTo("154F"));
     assertThat(input.getVendor(), equalTo("semmle"));
@@ -26,14 +26,14 @@ final class DeserializeReportTest {
   @Test
   void it_deserializes_basic_report() throws IOException {
     File file = new File("src/test/resources/basic.json");
-    CCFReport report = mapper.readValue(file, CCFReport.class);
+    CodeTFReport report = mapper.readValue(file, CodeTFReport.class);
 
-    CCFRun run = report.getRun();
+    CodeTFRun run = report.getRun();
     assertThat(run.getCommandLine(), equalTo("pixee change . --dry-run"));
     assertThat(run.getElapsed(), equalTo(105024L));
     assertThat(run.getTool(), equalTo("pixee-cli"));
     assertThat(run.getVendor(), equalTo("pixee"));
-    List<CCFFileExtensionScanned> filesScanned = run.getFilesScanned();
+    List<CodeTFFileExtensionScanned> filesScanned = run.getFilesScanned();
     assertThat(filesScanned.size(), equalTo(3));
 
     assertThat(filesScanned.get(0).getCount(), equalTo(156));
@@ -45,7 +45,7 @@ final class DeserializeReportTest {
 
     assertThat(run.getFailedFiles(), hasItems("/foo/failed.java"));
 
-    CCFConfiguration configuration = run.getConfiguration();
+    CodeTFConfiguration configuration = run.getConfiguration();
     assertThat(configuration.getDirectory(), equalTo("/tmp/path/to/repository/"));
 
     List<String> includes = configuration.getIncludes();
@@ -53,8 +53,8 @@ final class DeserializeReportTest {
     List<String> excludes = configuration.getExcludes();
     assertThat(excludes, hasItems("/path/to/exclude.js:52"));
 
-    List<CCFInput> inputs = configuration.getInputs();
-    CCFInput input = inputs.get(0);
+    List<CodeTFInput> inputs = configuration.getInputs();
+    CodeTFInput input = inputs.get(0);
     assertThat(input.getArtifact(), equalTo("/tmp/path/to/semmle.sarif"));
     assertThat(input.getVendor(), equalTo("Semmle/v1.2"));
     assertThat(input.getSha1(), equalTo("2F5A14..."));
@@ -62,13 +62,13 @@ final class DeserializeReportTest {
     List<String> modules = configuration.getModules();
     assertThat(modules, hasItems("java/v1.2", "javascript/v5.0"));
 
-    List<CCFResult> results = report.getResults();
-    CCFResult ccfResult = results.get(0);
-    assertThat(ccfResult.getDiff(), equalTo("... udiff text..."));
-    assertThat(ccfResult.getPath(), equalTo("src/main/java/org/acme/Foo.java"));
+    List<CodeTFResult> results = report.getResults();
+    CodeTFResult result = results.get(0);
+    assertThat(result.getDiff(), equalTo("... udiff text..."));
+    assertThat(result.getPath(), equalTo("src/main/java/org/acme/Foo.java"));
 
-    List<CCFChange> changes = ccfResult.getChanges();
-    CCFChange firstChange = changes.get(0);
+    List<CodeTFChange> changes = result.getChanges();
+    CodeTFChange firstChange = changes.get(0);
     assertThat(firstChange.getCategory(), equalTo("java-deserialization-hardening"));
     assertThat(
         firstChange.getDescription(),
@@ -76,7 +76,7 @@ final class DeserializeReportTest {
             "Added a call to ObjectInputStream#setObjectFilter() to prevent known malicious gadgets.."));
     assertThat(firstChange.getLineNumber(), equalTo(153));
 
-    CCFChange secondChange = changes.get(1);
+    CodeTFChange secondChange = changes.get(1);
     assertThat(secondChange.getCategory(), equalTo("java-secure-randomness"));
     assertThat(
         secondChange.getDescription(),

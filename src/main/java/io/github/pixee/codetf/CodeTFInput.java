@@ -1,10 +1,10 @@
-package io.github.pixee.ccf;
+package io.github.pixee.codetf;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** Describes an "input" for the CCF report. */
-public final class CCFInput {
+public final class CodeTFInput {
 
   private final String artifact;
 
@@ -13,13 +13,13 @@ public final class CCFInput {
   private final String vendor;
 
   @JsonCreator
-  public CCFInput(
+  public CodeTFInput(
       @JsonProperty("artifact") final String artifact,
       @JsonProperty("sha1") final String sha1,
       @JsonProperty("vendor") final String vendor) {
-    this.artifact = CCFValidator.requireNonBlank(artifact);
-    this.sha1 = CCFValidator.requireNonBlank(sha1);
-    this.vendor = CCFValidator.requireNonBlank(vendor);
+    this.artifact = CodeTFValidator.requireNonBlank(artifact);
+    this.sha1 = CodeTFValidator.requireNonBlank(sha1);
+    this.vendor = CodeTFValidator.requireNonBlank(vendor);
   }
 
   public String getArtifact() {
