@@ -1,6 +1,6 @@
 # Code Transformation Format - Java Bindings
 
-This library provides domain objects for interacting with [Code Transformation Format (CodeTF)](https://github.com/pixeeworks/codetf/) files.
+This library provides domain objects for interacting with [Code Transformation Format (CodeTF)](https://github.com/pixee/codemodder-specs/) files.
 
 # Features
 
@@ -11,9 +11,25 @@ These objects offer the following attributes:
 * Immutability
 * JavaDocs to help you understand what data is expected
 
-# Getting Started
+# Adding to your project
 
 To deserialize a CodeTF file using these objects, simply deserialize with Jackson's typical APIs:
+
+## Gradle
+```kotlin
+implementation("io.codemodder:codetf-java:2.0.0")
+```
+
+## Maven
+```xml
+<dependency>
+  <groupId>io.codemodder</groupId>
+  <artifactId>codetf-java</artifactId>
+  <version>2.0.0</version>
+</dependency>
+```
+
+## Using in your project
 
 ```java
 ObjectMapper mapper = new ObjectMapper();
