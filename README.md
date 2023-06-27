@@ -17,7 +17,7 @@ To deserialize a CodeTF file using these objects, simply deserialize with Jackso
 
 ## Gradle
 ```kotlin
-implementation("io.codemodder:codetf-java:2.0.0")
+implementation("io.codemodder:codetf-java:2.1.0")
 ```
 
 ## Maven
@@ -25,7 +25,7 @@ implementation("io.codemodder:codetf-java:2.0.0")
 <dependency>
   <groupId>io.codemodder</groupId>
   <artifactId>codetf-java</artifactId>
-  <version>2.0.0</version>
+  <version>2.1.0</version>
 </dependency>
 ```
 
