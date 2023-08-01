@@ -23,7 +23,7 @@ final class DeserializeReportTest {
 
   @Test
   void it_deserializes_basic_report() throws IOException {
-    File file = new File("src/test/resources/basic.codetf");
+    File file = new File("src/test/resources/basic.codetf.json");
     CodeTFReport report = mapper.readValue(file, CodeTFReport.class);
 
     CodeTFRun run = report.getRun();
@@ -63,5 +63,14 @@ final class DeserializeReportTest {
     assertThat(
         changeset.get(1).getChanges().get(0).getDescription(),
         equalTo("Added java-security-toolkit for MyDeserializationAction.java"));
+
+    assertThat(report.hasCodeChanges(), equalTo(true));
+  }
+
+  @Test
+  void it_answers_correctly_if_results_but_no_changes() throws IOException {
+    File file = new File("src/test/resources/no_changes_but_results.codetf.json");
+    CodeTFReport report = mapper.readValue(file, CodeTFReport.class);
+    assertThat(report.hasCodeChanges(), equalTo(false));
   }
 }
