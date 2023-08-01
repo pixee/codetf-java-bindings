@@ -1,0 +1,35 @@
+{
+  "run" : {
+    "vendor" : "pixee",
+    "tool" : "pixee-tool",
+    "version" : "1.0.0",
+    "commandLine" : "pixee change . --dry-run",
+    "elapsed" : "105024",
+    "directory" : "/tmp/path/to/repository/",
+    "sarifs" : [
+      {
+        "artifact" : "/tmp/path/to/semmle.sarif",
+        "sha1" : "2F5A14"
+      }
+    ]
+  },
+
+  "results" : [
+     {
+        "codemod" : "codemodder:java/deserialization",
+        "summary" : "Hardened object deserialization calls against attack",
+        "description" : "Lengthier description about deserialization risks, protections, etc...",
+        "references" : [
+            {
+                "url" : "https://www.oracle.com/technetwork/java/seccodeguide-139067.html#8",
+                "description" : "Oracle's Secure Coding Guidelines for Java SE"
+            }
+        ],
+        "properties" : { },
+        "failedFiles" : [
+          "/foo/failed.java"
+        ],
+        "changeset" : []
+     }
+  ]
+}

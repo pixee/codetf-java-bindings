@@ -24,7 +24,17 @@ public final class CodeTFReport {
     return run;
   }
 
+  /**
+   * Return a {@link List} of individual codemod's results. If this list is not empty, that does not
+   * mean there are changes to make.
+   */
   public List<CodeTFResult> getResults() {
     return results;
+  }
+
+  /** Returns true if the CodeTF describes any changes made to the code. */
+  public boolean hasCodeChanges() {
+    return results.stream()
+        .anyMatch(result -> result.getChangeset() != null && !result.getChangeset().isEmpty());
   }
 }
