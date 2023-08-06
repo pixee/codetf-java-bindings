@@ -6,6 +6,43 @@
     <artifactId>codetf-java</artifactId>
     <version>2.1.2</version>
 
+
+    <name>codetf-java</name>
+    <description>Jackson bindings for the Code Transformation Format (CodeTF)</description>
+    <url>https://github.com/pixee/codetf-java-bindings</url>
+
+    <scm>
+        <connection>scm:git:git://github.com/pixee/codetf-java-bindings.git</connection>
+        <developerConnection>scm:git:ssh://github.com:pixee/codetf-java-bindings.git</developerConnection>
+        <url>https://github.com/pixee/codetf-java-bindings/tree/main</url>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+        </license>
+    </licenses>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <developers>
+        <developer>
+            <name>Arshan Dabirsiaghi</name>
+            <organization>pixee</organization>
+            <organizationUrl>https://pixee.ai/</organizationUrl>
+        </developer>
+    </developers>
+
     <properties>
         <fmt.goal>format</fmt.goal>
         <versions.maven-compiler-plugin>3.8.1</versions.maven-compiler-plugin>
