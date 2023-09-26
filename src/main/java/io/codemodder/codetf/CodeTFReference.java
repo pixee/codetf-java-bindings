@@ -14,15 +14,15 @@ public final class CodeTFReference {
       @JsonProperty("url") final String url,
       @JsonProperty("description") final String description) {
     this.url = CodeTFValidator.requireNonBlank(url);
-    this.description = description;
-  }
-
-  public String getDescription() {
-    return description;
+    this.description = CodeTFValidator.optionalString(description);
   }
 
   public String getUrl() {
     return url;
+  }
+
+  public String getDescription() {
+    return description;
   }
 
   @Override
