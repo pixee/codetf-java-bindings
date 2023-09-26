@@ -11,6 +11,20 @@ import java.util.Set;
 final class CodeTFValidator {
 
   /**
+   * Optional strings may be {@code null} but may not be blank.
+   *
+   * @param s the string to check
+   * @return the string if it passes the check
+   * @throws IllegalArgumentException when the string is blank
+   */
+  static String optionalString(final String s) {
+    if (s != null && s.isBlank()) {
+      throw new IllegalArgumentException("string can't be blank");
+    }
+    return s;
+  }
+
+  /**
    * Returns the given {@link String} if it passes the two requirements -- it's non-null and it's
    * not only whitespace.
    */

@@ -35,7 +35,7 @@ public final class CodeTFChange {
     this.lineNumber = lineNumber;
     this.properties = CodeTFValidator.toImmutableCopyOrEmptyOnNull(properties);
     this.packageActions = CodeTFValidator.toImmutableCopyOrEmptyOnNull(packageActions);
-    this.description = CodeTFValidator.requireNonBlank(description);
+    this.description = CodeTFValidator.optionalString(description);
     this.parameters = parameters;
   }
 

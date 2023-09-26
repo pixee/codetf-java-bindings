@@ -22,8 +22,8 @@ public final class CodeTFParameter {
       @JsonProperty("defaultValue") final String defaultValue) {
     this.question = Objects.requireNonNull(question);
     this.name = Objects.requireNonNull(name);
-    this.type = type;
-    this.label = label;
+    this.type = CodeTFValidator.optionalString(type);
+    this.label = CodeTFValidator.optionalString(label);
     this.defaultValue = Objects.requireNonNull(defaultValue);
   }
 
