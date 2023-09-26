@@ -14,8 +14,6 @@ public final class CodeTFChange {
 
   private final String description;
 
-  private final String sourceControlUrl;
-
   private final Map<String, String> properties;
 
   private final List<CodeTFPackageAction> packageActions;
@@ -28,7 +26,6 @@ public final class CodeTFChange {
       @JsonProperty("properties") final Map<String, String> properties,
       @JsonProperty("description") final String description,
       @JsonProperty("packageActions") final List<CodeTFPackageAction> packageActions,
-      @JsonProperty("sourceControlUrl") final String sourceControlUrl,
       @JsonProperty("parameters") final List<CodeTFParameter> parameters) {
 
     if (lineNumber < 1) {
@@ -38,8 +35,7 @@ public final class CodeTFChange {
     this.lineNumber = lineNumber;
     this.properties = CodeTFValidator.toImmutableCopyOrEmptyOnNull(properties);
     this.packageActions = CodeTFValidator.toImmutableCopyOrEmptyOnNull(packageActions);
-    this.sourceControlUrl = sourceControlUrl;
-    this.description = description;
+    this.description = CodeTFValidator.requireNonBlank(description);
     this.parameters = parameters;
   }
 
@@ -53,10 +49,6 @@ public final class CodeTFChange {
 
   public int getLineNumber() {
     return lineNumber;
-  }
-
-  public String getSourceControlUrl() {
-    return sourceControlUrl;
   }
 
   public List<CodeTFPackageAction> getPackageActions() {
@@ -74,14 +66,13 @@ public final class CodeTFChange {
     final CodeTFChange that = (CodeTFChange) o;
     return lineNumber == that.lineNumber
         && Objects.equals(description, that.description)
-        && Objects.equals(sourceControlUrl, that.sourceControlUrl)
         && Objects.equals(properties, that.properties)
         && Objects.equals(parameters, that.parameters);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(lineNumber, description, properties, sourceControlUrl, parameters);
+    return Objects.hash(lineNumber, description, properties, parameters);
   }
 
   @Override
@@ -91,8 +82,6 @@ public final class CodeTFChange {
         + lineNumber
         + ", description='"
         + description
-        + "', sourceControlUrl='"
-        + sourceControlUrl
         + '\''
         + ", properties="
         + properties
@@ -140,7 +129,6 @@ public final class CodeTFChange {
           updatedProperties != null ? updatedProperties : originalChange.getProperties(),
           updatedDescription != null ? updatedDescription : originalChange.getDescription(),
           originalChange.getPackageActions(),
-          originalChange.getSourceControlUrl(),
           originalChange.getParameters());
     }
   }
