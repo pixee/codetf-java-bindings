@@ -19,7 +19,7 @@ public final class CodeTFChangesetEntry {
       @JsonProperty("path") final String path,
       @JsonProperty("diff") final String diff,
       @JsonProperty("changes") final List<CodeTFChange> changes) {
-    this.path = CodeTFValidator.requireNonBlank(path);
+    this.path = CodeTFValidator.requireRelativePath(path);
     this.diff = CodeTFValidator.requireNonBlank(diff);
     this.changes = CodeTFValidator.toImmutableCopyOrEmptyOnNull(changes);
   }
