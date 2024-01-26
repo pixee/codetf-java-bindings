@@ -39,6 +39,18 @@ final class CodeTFValidator {
   }
 
   /**
+   * Returns the given {@link String} if it passes the two requirements -- it's not blank, and it is
+   * not an absolute path.
+   */
+  static String requireRelativePath(final String path) {
+    requireNonBlank(path);
+    if (path.startsWith("/")) {
+      throw new IllegalArgumentException("path must be relative");
+    }
+    return path;
+  }
+
+  /**
    * Given a {@link Map} that is possibly null, return an instance that represents an immutable copy
    * of it, or an empty map.
    */
