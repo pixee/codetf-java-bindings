@@ -13,6 +13,7 @@ public final class CodeTFChange {
   private final int lineNumber;
 
   private final String description;
+  private final CodeTFDiffSide diffSide;
 
   private final Map<String, String> properties;
 
@@ -25,6 +26,7 @@ public final class CodeTFChange {
       @JsonProperty("lineNumber") final int lineNumber,
       @JsonProperty("properties") final Map<String, String> properties,
       @JsonProperty("description") final String description,
+      @JsonProperty("diffSide") final CodeTFDiffSide diffSide,
       @JsonProperty("packageActions") final List<CodeTFPackageAction> packageActions,
       @JsonProperty("parameters") final List<CodeTFParameter> parameters) {
 
@@ -36,6 +38,7 @@ public final class CodeTFChange {
     this.properties = CodeTFValidator.toImmutableCopyOrEmptyOnNull(properties);
     this.packageActions = CodeTFValidator.toImmutableCopyOrEmptyOnNull(packageActions);
     this.description = CodeTFValidator.optionalString(description);
+    this.diffSide = diffSide;
     this.parameters = parameters;
   }
 
@@ -49,6 +52,10 @@ public final class CodeTFChange {
 
   public int getLineNumber() {
     return lineNumber;
+  }
+
+  public CodeTFDiffSide getDiffSide() {
+    return diffSide;
   }
 
   public List<CodeTFPackageAction> getPackageActions() {
@@ -67,7 +74,8 @@ public final class CodeTFChange {
     return lineNumber == that.lineNumber
         && Objects.equals(description, that.description)
         && Objects.equals(properties, that.properties)
-        && Objects.equals(parameters, that.parameters);
+        && Objects.equals(parameters, that.parameters)
+        && Objects.equals(diffSide, that.diffSide);
   }
 
   @Override
@@ -83,6 +91,8 @@ public final class CodeTFChange {
         + ", description='"
         + description
         + '\''
+        + ", diffSide="
+        + diffSide
         + ", properties="
         + properties
         + ", parameters="
@@ -128,6 +138,7 @@ public final class CodeTFChange {
           originalChange.getLineNumber(),
           updatedProperties != null ? updatedProperties : originalChange.getProperties(),
           updatedDescription != null ? updatedDescription : originalChange.getDescription(),
+          originalChange.getDiffSide(),
           originalChange.getPackageActions(),
           originalChange.getParameters());
     }

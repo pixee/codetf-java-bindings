@@ -55,6 +55,7 @@ final class DeserializeReportTest {
     assertThat(
         changeset.get(0).getPath(), equalTo("src/main/java/org/acme/MyDeserializerAction.java"));
     assertThat(changeset.get(0).getDiff(), equalTo("... udiff text..."));
+    assertThat(changeset.get(0).getChanges().get(0).getDiffSide(), equalTo(CodeTFDiffSide.RIGHT));
 
     assertThat(changeset.get(1).getPath(), equalTo("pom.xml"));
     assertThat(changeset.get(1).getDiff(), equalTo("... pom udiff text..."));
@@ -63,6 +64,7 @@ final class DeserializeReportTest {
     assertThat(
         changeset.get(1).getChanges().get(0).getDescription(),
         equalTo("Added java-security-toolkit for MyDeserializationAction.java"));
+    assertThat(changeset.get(1).getChanges().get(0).getDiffSide(), equalTo(CodeTFDiffSide.LEFT));
 
     assertThat(report.hasCodeChanges(), equalTo(true));
   }

@@ -37,6 +37,7 @@
                     {
                         "lineNumber" : "153",
                         "description" : "Added a call to ObjectInputStream#setObjectFilter() to prevent known malicious gadgets..",
+                        "diffSide" : "right",
                         "properties" : { },
                         "packageActions" : [
                             {
@@ -54,6 +55,7 @@
                 "changes" : [
                     {
                         "lineNumber" : "155",
+                        "diffSide" : "left",
                         "description" : "Added java-security-toolkit for MyDeserializationAction.java"
                     }
                 ]
