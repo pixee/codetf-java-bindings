@@ -35,3 +35,11 @@ implementation("io.codemodder:codetf-java:3.0.0")
 ObjectMapper mapper = new ObjectMapper();
 CodeTFReport report = mapper.readValue(codetfFile, CodeTFReport.class);
 ```
+
+## Running Formatter
+
+To run the autoformatter, run the following command:
+
+```shell
+mvn fmt:format
+```
