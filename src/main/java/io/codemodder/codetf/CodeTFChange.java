@@ -38,7 +38,7 @@ public final class CodeTFChange {
     this.properties = CodeTFValidator.toImmutableCopyOrEmptyOnNull(properties);
     this.packageActions = CodeTFValidator.toImmutableCopyOrEmptyOnNull(packageActions);
     this.description = CodeTFValidator.optionalString(description);
-    this.diffSide = diffSide;
+    this.diffSide = Objects.requireNonNull(diffSide);
     this.parameters = parameters;
   }
 
