@@ -10,6 +10,7 @@ public final class CodeTFResult {
   private final String codemod;
   private final String summary;
   private final String description;
+  private final Optional<DetectionTool> detectionTool;
   private final Set<String> failedFiles;
   private final List<CodeTFReference> references;
   private final Map<String, String> properties;
@@ -20,13 +21,15 @@ public final class CodeTFResult {
       @JsonProperty(value = "codemod", index = 1) final String codemod,
       @JsonProperty(value = "summary", index = 2) final String summary,
       @JsonProperty(value = "description", index = 3) final String description,
-      @JsonProperty(value = "failedFiles", index = 4) final Set<String> failedFiles,
-      @JsonProperty(value = "references", index = 5) final List<CodeTFReference> references,
-      @JsonProperty(value = "properties", index = 6) final Map<String, String> properties,
-      @JsonProperty(value = "changeset", index = 7) final List<CodeTFChangesetEntry> changeset) {
+      @JsonProperty(value = "detectionTool", index = 4) final DetectionTool detectionTool,
+      @JsonProperty(value = "failedFiles", index = 5) final Set<String> failedFiles,
+      @JsonProperty(value = "references", index = 6) final List<CodeTFReference> references,
+      @JsonProperty(value = "properties", index = 7) final Map<String, String> properties,
+      @JsonProperty(value = "changeset", index = 8) final List<CodeTFChangesetEntry> changeset) {
     this.codemod = CodeTFValidator.requireNonBlank(codemod);
     this.summary = CodeTFValidator.requireNonBlank(summary);
     this.description = CodeTFValidator.requireNonBlank(description);
+    this.detectionTool = Optional.ofNullable(detectionTool);
     this.failedFiles = CodeTFValidator.toImmutableCopyOrEmptyOnNull(failedFiles);
     this.references = CodeTFValidator.toImmutableCopyOrEmptyOnNull(references);
     this.properties = CodeTFValidator.toImmutableCopyOrEmptyOnNull(properties);
@@ -43,6 +46,10 @@ public final class CodeTFResult {
 
   public String getDescription() {
     return description;
+  }
+
+  public Optional<DetectionTool> getDetectionTool() {
+    return detectionTool;
   }
 
   public Set<String> getFailedFiles() {
@@ -106,6 +113,7 @@ public final class CodeTFResult {
           originalResult.getCodemod(),
           updatedSummary != null ? updatedSummary : originalResult.getSummary(),
           updatedDescription != null ? updatedDescription : originalResult.getDescription(),
+          originalResult.detectionTool.orElse(null),
           originalResult.getFailedFiles(),
           updatedReferences != null ? updatedReferences : originalResult.getReferences(),
           originalResult.getProperties(),
