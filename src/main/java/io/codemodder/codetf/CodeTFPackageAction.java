@@ -1,5 +1,6 @@
 package io.codemodder.codetf;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
@@ -7,13 +8,18 @@ import java.util.Objects;
 public final class CodeTFPackageAction {
 
   public enum CodeTFPackageActionType {
+    @JsonAlias("add")
     ADD,
+    @JsonAlias("remove")
     REMOVE
   }
 
   public enum CodeTFPackageActionResult {
+    @JsonAlias("completed")
     COMPLETED,
+    @JsonAlias("failed")
     FAILED,
+    @JsonAlias("skipped")
     SKIPPED
   }
 
