@@ -10,7 +10,7 @@ public final class CodeTFResult {
   private final String codemod;
   private final String summary;
   private final String description;
-  private final Optional<DetectionTool> detectionTool;
+  private final DetectionTool detectionTool;
   private final Set<String> failedFiles;
   private final List<CodeTFReference> references;
   private final Map<String, String> properties;
@@ -29,7 +29,7 @@ public final class CodeTFResult {
     this.codemod = CodeTFValidator.requireNonBlank(codemod);
     this.summary = CodeTFValidator.requireNonBlank(summary);
     this.description = CodeTFValidator.requireNonBlank(description);
-    this.detectionTool = Optional.ofNullable(detectionTool);
+    this.detectionTool = detectionTool;
     this.failedFiles = CodeTFValidator.toImmutableCopyOrEmptyOnNull(failedFiles);
     this.references = CodeTFValidator.toImmutableCopyOrEmptyOnNull(references);
     this.properties = CodeTFValidator.toImmutableCopyOrEmptyOnNull(properties);
@@ -48,7 +48,7 @@ public final class CodeTFResult {
     return description;
   }
 
-  public Optional<DetectionTool> getDetectionTool() {
+  public DetectionTool getDetectionTool() {
     return detectionTool;
   }
 
@@ -113,7 +113,7 @@ public final class CodeTFResult {
           originalResult.getCodemod(),
           updatedSummary != null ? updatedSummary : originalResult.getSummary(),
           updatedDescription != null ? updatedDescription : originalResult.getDescription(),
-          originalResult.detectionTool.orElse(null),
+          originalResult.detectionTool,
           originalResult.getFailedFiles(),
           updatedReferences != null ? updatedReferences : originalResult.getReferences(),
           originalResult.getProperties(),
