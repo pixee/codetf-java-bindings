@@ -3,13 +3,12 @@ package io.codemodder.codetf;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
-import java.util.Optional;
 
 /** Describes the "rule" section of a detection tool. */
 public final class DetectorRule {
   private final String id;
   private final String name;
-  private final Optional<String> url;
+  private final String url;
 
   @JsonCreator
   public DetectorRule(
@@ -18,7 +17,7 @@ public final class DetectorRule {
       @JsonProperty(value = "url", index = 3) String url) {
     this.id = Objects.requireNonNull(id);
     this.name = Objects.requireNonNull(name);
-    this.url = Optional.ofNullable(url);
+    this.url = url;
   }
 
   public String getId() {
@@ -29,7 +28,7 @@ public final class DetectorRule {
     return name;
   }
 
-  public Optional<String> getUrl() {
+  public String getUrl() {
     return url;
   }
 }

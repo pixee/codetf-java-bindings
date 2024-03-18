@@ -95,7 +95,7 @@ class CodeTFResultTest {
     assertEquals("rule", tool.getRule().getId());
     assertEquals("Here's a rule", tool.getRule().getName());
     assertEquals(2, tool.getFindings().size());
-    assertTrue(tool.getRule().getUrl().isEmpty());
+    assertNull(tool.getRule().getUrl());
   }
 
   @Test
@@ -112,8 +112,8 @@ class CodeTFResultTest {
     assertEquals("rule", tool.getRule().getId());
     assertEquals("Here's a rule", tool.getRule().getName());
     assertEquals(2, tool.getFindings().size());
-    assertTrue(tool.getRule().getUrl().isPresent());
-    assertEquals("https://example.com", tool.getRule().getUrl().get());
+    assertNotNull(tool.getRule().getUrl());
+    assertEquals("https://example.com", tool.getRule().getUrl());
   }
 
   @Test
