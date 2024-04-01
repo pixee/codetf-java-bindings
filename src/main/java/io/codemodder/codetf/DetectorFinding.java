@@ -19,7 +19,7 @@ public final class DetectorFinding {
     this.id = Objects.requireNonNull(id);
     this.fixed = fixed;
     this.reason = Optional.ofNullable(reason);
-    if (fixed && this.reason.isEmpty()) {
+    if (!fixed && this.reason.isEmpty()) {
       throw new IllegalArgumentException("Fixed findings must have a reason");
     }
   }
