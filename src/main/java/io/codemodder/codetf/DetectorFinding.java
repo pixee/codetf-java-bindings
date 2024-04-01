@@ -20,7 +20,7 @@ public final class DetectorFinding {
     this.fixed = fixed;
     this.reason = Optional.ofNullable(reason);
     if (!fixed && this.reason.isEmpty()) {
-      throw new IllegalArgumentException("Fixed findings must have a reason");
+      throw new IllegalArgumentException("Unfixed findings must have a reason");
     }
   }
 
