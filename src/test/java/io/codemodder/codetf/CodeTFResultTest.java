@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-class CodeTFResultTest {
+final class CodeTFResultTest {
 
   @Test
   void it_creates_result() {
@@ -88,8 +88,8 @@ class CodeTFResultTest {
             "tool",
             new DetectorRule("rule", "Here's a rule", null),
             List.of(
-                new DetectorFinding("finding", true, "It's fixed"),
-                new DetectorFinding("finding", false, null)));
+                new DetectorFinding("finding", true, null),
+                new DetectorFinding("finding", false, "It's fixed")));
     assertNotNull(tool);
     assertEquals("tool", tool.getName());
     assertEquals("rule", tool.getRule().getId());
@@ -106,7 +106,7 @@ class CodeTFResultTest {
             new DetectorRule("rule", "Here's a rule", "https://example.com"),
             List.of(
                 new DetectorFinding("finding", true, "It's fixed"),
-                new DetectorFinding("finding", false, null)));
+                new DetectorFinding("finding", false, "It's not fixed")));
     assertNotNull(tool);
     assertEquals("tool", tool.getName());
     assertEquals("rule", tool.getRule().getId());
@@ -127,15 +127,15 @@ class CodeTFResultTest {
 
   @Test
   void it_raises_iae_on_fixed_finding_with_null_reason() {
-    assertThrows(IllegalArgumentException.class, () -> new DetectorFinding("finding", true, null));
+    assertThrows(IllegalArgumentException.class, () -> new DetectorFinding("finding", false, null));
   }
 
   @Test
   void it_creates_finding_with_null_reason() {
-    DetectorFinding finding = new DetectorFinding("finding", false, null);
+    DetectorFinding finding = new DetectorFinding("finding", true, null);
     assertNotNull(finding);
     assertEquals("finding", finding.getId());
-    assertFalse(finding.getFixed());
+    assertTrue(finding.getFixed());
     assertTrue(finding.getReason().isEmpty());
   }
 }
