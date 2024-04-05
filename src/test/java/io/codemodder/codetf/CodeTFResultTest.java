@@ -32,7 +32,8 @@ final class CodeTFResultTest {
                     "pom.xml",
                     "... udiff text...",
                     List.of(
-                        new CodeTFChange(1, null, "whatever", CodeTFDiffSide.RIGHT, null, null)))));
+                        new CodeTFChange(1, null, "whatever", CodeTFDiffSide.RIGHT, null, null)))),
+            List.of());
     assertNotNull(result);
     assertEquals("codemodder:java/deserialization", result.getCodemod());
     assertEquals("Hardened object deserialization calls against attack", result.getSummary());
@@ -46,12 +47,18 @@ final class CodeTFResultTest {
 
   @Test
   void it_creates_result_with_detection_tool() {
+
+    DetectionTool tool = new DetectionTool("acme-scanner");
+    DetectorRule rule = new DetectorRule("rule", "Here's a rule", null);
+    UnfixedFinding unfixedFinding =
+        new UnfixedFinding("rule-id-23", rule, "/foo/bar.java", 42, "It's not fixed");
+
     CodeTFResult result =
         new CodeTFResult(
             "codemodder:java/deserialization",
             "Hardened object deserialization calls against attack",
             "Lengthier description about deserialization risks, protections, etc...",
-            new DetectionTool("tool", new DetectorRule("rule", "Here's a rule", null), List.of()),
+            tool,
             Set.of("/foo/failed.java"),
             List.of(
                 new CodeTFReference(
@@ -68,7 +75,8 @@ final class CodeTFResultTest {
                     "pom.xml",
                     "... udiff text...",
                     List.of(
-                        new CodeTFChange(1, null, "whatever", CodeTFDiffSide.RIGHT, null, null)))));
+                        new CodeTFChange(1, null, "whatever", CodeTFDiffSide.RIGHT, null, null)))),
+            List.of(unfixedFinding));
     assertNotNull(result);
     assertEquals("codemodder:java/deserialization", result.getCodemod());
     assertEquals("Hardened object deserialization calls against attack", result.getSummary());
@@ -78,64 +86,44 @@ final class CodeTFResultTest {
     assertEquals(1, result.getReferences().size());
     assertEquals(1, result.getFailedFiles().size());
     assertEquals(2, result.getChangeset().size());
+    assertEquals(tool, result.getDetectionTool());
+    assertEquals(1, result.getUnfixedFindings().size());
     assertNotNull(result.getDetectionTool());
   }
 
   @Test
-  void it_creates_detection_tool_with_empty_url() {
-    DetectionTool tool =
-        new DetectionTool(
-            "tool",
-            new DetectorRule("rule", "Here's a rule", null),
-            List.of(
-                new DetectorFinding("finding", true, null),
-                new DetectorFinding("finding", false, "It's fixed")));
-    assertNotNull(tool);
+  void it_creates_detection_tool() {
+    DetectorRule rule = new DetectorRule("rule", "Here's a rule", null);
+    DetectionTool tool = new DetectionTool("tool");
     assertEquals("tool", tool.getName());
-    assertEquals("rule", tool.getRule().getId());
-    assertEquals("Here's a rule", tool.getRule().getName());
-    assertEquals(2, tool.getFindings().size());
-    assertNull(tool.getRule().getUrl());
-  }
-
-  @Test
-  void it_creates_detection_tool_with_url() {
-    DetectionTool tool =
-        new DetectionTool(
-            "tool",
-            new DetectorRule("rule", "Here's a rule", "https://example.com"),
-            List.of(
-                new DetectorFinding("finding", true, "It's fixed"),
-                new DetectorFinding("finding", false, "It's not fixed")));
-    assertNotNull(tool);
-    assertEquals("tool", tool.getName());
-    assertEquals("rule", tool.getRule().getId());
-    assertEquals("Here's a rule", tool.getRule().getName());
-    assertEquals(2, tool.getFindings().size());
-    assertNotNull(tool.getRule().getUrl());
-    assertEquals("https://example.com", tool.getRule().getUrl());
+    assertEquals("rule", rule.getId());
+    assertEquals("Here's a rule", rule.getName());
   }
 
   @Test
   void it_creates_finding() {
-    DetectorFinding finding = new DetectorFinding("finding", true, "It's fixed");
-    assertNotNull(finding);
+    DetectorRule rule = new DetectorRule("foo", "bar", "");
+    FixedFinding finding = new FixedFinding("finding", rule);
     assertEquals("finding", finding.getId());
-    assertTrue(finding.getFixed());
-    assertEquals("It's fixed", finding.getReason().get());
+    assertThrows(NullPointerException.class, () -> new FixedFinding("finding", null));
+    assertThrows(IllegalArgumentException.class, () -> new FixedFinding("", rule));
+    assertThrows(IllegalArgumentException.class, () -> new FixedFinding(null, rule));
   }
 
   @Test
-  void it_raises_iae_on_fixed_finding_with_null_reason() {
-    assertThrows(IllegalArgumentException.class, () -> new DetectorFinding("finding", false, null));
-  }
-
-  @Test
-  void it_creates_finding_with_null_reason() {
-    DetectorFinding finding = new DetectorFinding("finding", true, null);
-    assertNotNull(finding);
-    assertEquals("finding", finding.getId());
-    assertTrue(finding.getFixed());
-    assertTrue(finding.getReason().isEmpty());
+  void it_creates_unfixed_findings() {
+    DetectorRule rule = new DetectorRule("foo", "bar", "");
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new UnfixedFinding("finding", rule, "src/foo", 15, null));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new UnfixedFinding("finding", rule, "src/foo", 15, ""));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new UnfixedFinding("finding", rule, "", 15, "reason here"));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new UnfixedFinding("finding", rule, null, 15, "reason here"));
   }
 }

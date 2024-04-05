@@ -15,6 +15,7 @@ public final class CodeTFResult {
   private final List<CodeTFReference> references;
   private final Map<String, String> properties;
   private final List<CodeTFChangesetEntry> changeset;
+  private final List<UnfixedFinding> unfixedFindings;
 
   @JsonCreator
   public CodeTFResult(
@@ -25,7 +26,8 @@ public final class CodeTFResult {
       @JsonProperty(value = "failedFiles", index = 5) final Set<String> failedFiles,
       @JsonProperty(value = "references", index = 6) final List<CodeTFReference> references,
       @JsonProperty(value = "properties", index = 7) final Map<String, String> properties,
-      @JsonProperty(value = "changeset", index = 8) final List<CodeTFChangesetEntry> changeset) {
+      @JsonProperty(value = "changeset", index = 8) final List<CodeTFChangesetEntry> changeset,
+      @JsonProperty(value = "unfixed", index = 9) final List<UnfixedFinding> unfixedFindings) {
     this.codemod = CodeTFValidator.requireNonBlank(codemod);
     this.summary = CodeTFValidator.requireNonBlank(summary);
     this.description = CodeTFValidator.requireNonBlank(description);
@@ -34,6 +36,7 @@ public final class CodeTFResult {
     this.references = CodeTFValidator.toImmutableCopyOrEmptyOnNull(references);
     this.properties = CodeTFValidator.toImmutableCopyOrEmptyOnNull(properties);
     this.changeset = Objects.requireNonNull(changeset);
+    this.unfixedFindings = CodeTFValidator.toImmutableCopyOrEmptyOnNull(unfixedFindings);
   }
 
   public String getCodemod() {
@@ -66,6 +69,10 @@ public final class CodeTFResult {
 
   public List<CodeTFChangesetEntry> getChangeset() {
     return changeset;
+  }
+
+  public List<UnfixedFinding> getUnfixedFindings() {
+    return unfixedFindings;
   }
 
   /** Create a new CodeTFResult builder based on an existing instance. */
@@ -117,7 +124,8 @@ public final class CodeTFResult {
           originalResult.getFailedFiles(),
           updatedReferences != null ? updatedReferences : originalResult.getReferences(),
           originalResult.getProperties(),
-          originalResult.getChangeset());
+          originalResult.getChangeset(),
+          originalResult.unfixedFindings);
     }
   }
 }
