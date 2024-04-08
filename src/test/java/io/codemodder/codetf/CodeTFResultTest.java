@@ -27,12 +27,14 @@ final class CodeTFResultTest {
                     "src/main/java/org/acme/MyDeserializerAction.java",
                     "... udiff text...",
                     List.of(
-                        new CodeTFChange(1, null, "whatever", CodeTFDiffSide.RIGHT, null, null))),
+                        new CodeTFChange(
+                            1, null, "whatever", CodeTFDiffSide.RIGHT, null, null, List.of()))),
                 new CodeTFChangesetEntry(
                     "pom.xml",
                     "... udiff text...",
                     List.of(
-                        new CodeTFChange(1, null, "whatever", CodeTFDiffSide.RIGHT, null, null)))),
+                        new CodeTFChange(
+                            1, null, "whatever", CodeTFDiffSide.RIGHT, null, null, List.of())))),
             List.of());
     assertNotNull(result);
     assertEquals("codemodder:java/deserialization", result.getCodemod());
@@ -70,12 +72,14 @@ final class CodeTFResultTest {
                     "src/main/java/org/acme/MyDeserializerAction.java",
                     "... udiff text...",
                     List.of(
-                        new CodeTFChange(1, null, "whatever", CodeTFDiffSide.RIGHT, null, null))),
+                        new CodeTFChange(
+                            1, null, "whatever", CodeTFDiffSide.RIGHT, null, null, List.of()))),
                 new CodeTFChangesetEntry(
                     "pom.xml",
                     "... udiff text...",
                     List.of(
-                        new CodeTFChange(1, null, "whatever", CodeTFDiffSide.RIGHT, null, null)))),
+                        new CodeTFChange(
+                            1, null, "whatever", CodeTFDiffSide.RIGHT, null, null, List.of())))),
             List.of(unfixedFinding));
     assertNotNull(result);
     assertEquals("codemodder:java/deserialization", result.getCodemod());

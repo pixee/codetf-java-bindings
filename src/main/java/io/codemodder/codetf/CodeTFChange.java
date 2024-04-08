@@ -21,6 +21,8 @@ public final class CodeTFChange {
 
   private final List<CodeTFParameter> parameters;
 
+  private final List<FixedFinding> fixedFindings;
+
   @JsonCreator
   public CodeTFChange(
       @JsonProperty("lineNumber") final int lineNumber,
@@ -28,7 +30,8 @@ public final class CodeTFChange {
       @JsonProperty("description") final String description,
       @JsonProperty("diffSide") final CodeTFDiffSide diffSide,
       @JsonProperty("packageActions") final List<CodeTFPackageAction> packageActions,
-      @JsonProperty("parameters") final List<CodeTFParameter> parameters) {
+      @JsonProperty("parameters") final List<CodeTFParameter> parameters,
+      @JsonProperty("findings") final List<FixedFinding> fixedFindings) {
 
     if (lineNumber < 1) {
       throw new IllegalArgumentException("line number must be positive");
@@ -40,6 +43,7 @@ public final class CodeTFChange {
     this.description = CodeTFValidator.optionalString(description);
     this.diffSide = Objects.requireNonNull(diffSide);
     this.parameters = parameters;
+    this.fixedFindings = CodeTFValidator.toImmutableCopyOrEmptyOnNull(fixedFindings);
   }
 
   public Map<String, String> getProperties() {
@@ -64,6 +68,10 @@ public final class CodeTFChange {
 
   public List<CodeTFParameter> getParameters() {
     return parameters;
+  }
+
+  public List<FixedFinding> getFixedFindings() {
+    return fixedFindings;
   }
 
   @Override
@@ -140,7 +148,8 @@ public final class CodeTFChange {
           updatedDescription != null ? updatedDescription : originalChange.getDescription(),
           originalChange.getDiffSide(),
           originalChange.getPackageActions(),
-          originalChange.getParameters());
+          originalChange.getParameters(),
+          originalChange.getFixedFindings());
     }
   }
 }

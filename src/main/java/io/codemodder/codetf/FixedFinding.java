@@ -25,4 +25,17 @@ public final class FixedFinding {
   public DetectorRule getRule() {
     return rule;
   }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    FixedFinding that = (FixedFinding) o;
+    return Objects.equals(id, that.id) && Objects.equals(rule, that.rule);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, rule);
+  }
 }

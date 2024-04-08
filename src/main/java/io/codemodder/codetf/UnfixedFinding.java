@@ -46,4 +46,21 @@ public final class UnfixedFinding {
   public Integer getLine() {
     return line;
   }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    UnfixedFinding that = (UnfixedFinding) o;
+    return Objects.equals(id, that.id)
+        && Objects.equals(rule, that.rule)
+        && Objects.equals(path, that.path)
+        && Objects.equals(line, that.line)
+        && Objects.equals(reason, that.reason);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, rule, path, line, reason);
+  }
 }
