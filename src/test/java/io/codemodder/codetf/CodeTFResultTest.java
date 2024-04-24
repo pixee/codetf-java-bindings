@@ -130,4 +130,28 @@ final class CodeTFResultTest {
         IllegalArgumentException.class,
         () -> new UnfixedFinding("finding", rule, null, 15, "reason here"));
   }
+
+  @Test
+  void it_has_changeset_with_ai() {
+    CodeTFAiMetadata ai = new CodeTFAiMetadata("ai", "best-model-ever", null);
+    CodeTFChangesetEntry entry = new CodeTFChangesetEntry("src/foo", "diff", List.of(), ai);
+    assertTrue(entry.usesAi());
+
+    final var result =
+        new CodeTFResult(
+            "codemodder:java/deserialization",
+            "Hardened object deserialization calls against attack",
+            "Lengthier description about deserialization risks, protections, etc...",
+            null,
+            Set.of("/foo/failed.java"),
+            List.of(
+                new CodeTFReference(
+                    "https://www.oracle.com/technetwork/java/seccodeguide-139067.html#8",
+                    "Oracle's Secure Coding Guidelines for Java SE")),
+            null,
+            List.of(entry),
+            List.of());
+
+    assertTrue(result.usesAi());
+  }
 }

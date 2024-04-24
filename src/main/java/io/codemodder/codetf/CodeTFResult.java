@@ -3,6 +3,7 @@ package io.codemodder.codetf;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /** Describes the "result" section of a CodeTF document. */
 public final class CodeTFResult {
@@ -37,6 +38,15 @@ public final class CodeTFResult {
     this.properties = CodeTFValidator.toImmutableCopyOrEmptyOnNull(properties);
     this.changeset = Objects.requireNonNull(changeset);
     this.unfixedFindings = CodeTFValidator.toImmutableCopyOrEmptyOnNull(unfixedFindings);
+  }
+
+  /** Constructor for required (non-nullable) fields */
+  public CodeTFResult(
+      final String codemod,
+      final String summary,
+      final String description,
+      final List<CodeTFChangesetEntry> changeset) {
+    this(codemod, summary, description, null, null, null, null, changeset, null);
   }
 
   public String getCodemod() {
@@ -75,6 +85,19 @@ public final class CodeTFResult {
     return unfixedFindings;
   }
 
+  public boolean usesAi() {
+    return changeset.stream().anyMatch(CodeTFChangesetEntry::usesAi);
+  }
+
+  public List<FixedFinding> getFixedFindings() {
+    return changeset.stream()
+        .map(CodeTFChangesetEntry::getChanges)
+        .flatMap(List::stream)
+        .map(CodeTFChange::getFixedFindings)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+  }
+
   /** Create a new CodeTFResult builder based on an existing instance. */
   public static Builder basedOn(final CodeTFResult result) {
     return new Builder(result);
@@ -105,6 +128,12 @@ public final class CodeTFResult {
       return this;
     }
 
+    public Builder withReferences(final List<CodeTFReference> references) {
+      Objects.requireNonNull(references);
+      this.updatedReferences = references;
+      return this;
+    }
+
     /** Update the CodeTFResult with additional references. */
     public Builder withAdditionalReferences(final List<CodeTFReference> references) {
       Objects.requireNonNull(references);
@@ -112,6 +141,21 @@ public final class CodeTFResult {
         updatedReferences = new ArrayList<>(originalResult.references);
       }
       updatedReferences.addAll(references);
+      return this;
+    }
+
+    public Builder withDetectionTool(final DetectionTool detectionTool) {
+      Objects.requireNonNull(detectionTool);
+      return this;
+    }
+
+    public Builder withChangeset(final List<CodeTFChangesetEntry> changeset) {
+      Objects.requireNonNull(changeset);
+      return this;
+    }
+
+    public Builder withUnfixedFindings(final List<UnfixedFinding> unfixedFindings) {
+      Objects.requireNonNull(unfixedFindings);
       return this;
     }
 
