@@ -14,14 +14,23 @@ public final class CodeTFChangesetEntry {
 
   private final List<CodeTFChange> changes;
 
+  private final CodeTFAiMetadata ai;
+
   @JsonCreator
   public CodeTFChangesetEntry(
       @JsonProperty("path") final String path,
       @JsonProperty("diff") final String diff,
-      @JsonProperty("changes") final List<CodeTFChange> changes) {
+      @JsonProperty("changes") final List<CodeTFChange> changes,
+      @JsonProperty("ai") final CodeTFAiMetadata ai) {
     this.path = CodeTFValidator.requireRelativePath(path);
     this.diff = CodeTFValidator.requireNonBlank(diff);
     this.changes = CodeTFValidator.toImmutableCopyOrEmptyOnNull(changes);
+    this.ai = ai;
+  }
+
+  public CodeTFChangesetEntry(
+      final String path, final String diff, final List<CodeTFChange> changes) {
+    this(path, diff, changes, null);
   }
 
   public String getPath() {
@@ -36,6 +45,14 @@ public final class CodeTFChangesetEntry {
     return changes;
   }
 
+  public CodeTFAiMetadata getAi() {
+    return ai;
+  }
+
+  public boolean usesAi() {
+    return ai != null;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -43,12 +60,13 @@ public final class CodeTFChangesetEntry {
     CodeTFChangesetEntry entry = (CodeTFChangesetEntry) o;
     return Objects.equals(path, entry.path)
         && Objects.equals(diff, entry.diff)
-        && Objects.equals(changes, entry.changes);
+        && Objects.equals(changes, entry.changes)
+        && Objects.equals(ai, entry.ai);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(path, diff, changes);
+    return Objects.hash(path, diff, changes, ai);
   }
 
   @Override
