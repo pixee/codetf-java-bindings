@@ -109,6 +109,9 @@ public final class CodeTFResult {
     private String updatedSummary;
     private String updatedDescription;
     private List<CodeTFReference> updatedReferences;
+    private DetectionTool detectionTool;
+    private List<CodeTFChangesetEntry> changeset;
+    private List<UnfixedFinding> unfixedFindings;
 
     private Builder(final CodeTFResult result) {
       this.originalResult = Objects.requireNonNull(result);
@@ -146,16 +149,19 @@ public final class CodeTFResult {
 
     public Builder withDetectionTool(final DetectionTool detectionTool) {
       Objects.requireNonNull(detectionTool);
+      this.detectionTool = detectionTool;
       return this;
     }
 
     public Builder withChangeset(final List<CodeTFChangesetEntry> changeset) {
       Objects.requireNonNull(changeset);
+      this.changeset = changeset;
       return this;
     }
 
     public Builder withUnfixedFindings(final List<UnfixedFinding> unfixedFindings) {
       Objects.requireNonNull(unfixedFindings);
+      this.unfixedFindings = unfixedFindings;
       return this;
     }
 
@@ -164,12 +170,12 @@ public final class CodeTFResult {
           originalResult.getCodemod(),
           updatedSummary != null ? updatedSummary : originalResult.getSummary(),
           updatedDescription != null ? updatedDescription : originalResult.getDescription(),
-          originalResult.detectionTool,
+          detectionTool != null ? detectionTool : originalResult.getDetectionTool(),
           originalResult.getFailedFiles(),
           updatedReferences != null ? updatedReferences : originalResult.getReferences(),
           originalResult.getProperties(),
-          originalResult.getChangeset(),
-          originalResult.unfixedFindings);
+          changeset != null ? changeset : originalResult.getChangeset(),
+          unfixedFindings != null ? unfixedFindings : originalResult.getUnfixedFindings());
     }
   }
 }
