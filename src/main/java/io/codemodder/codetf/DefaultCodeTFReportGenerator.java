@@ -23,7 +23,7 @@ final class DefaultCodeTFReportGenerator implements CodeTFReportGenerator {
             .map(
                 sarif -> {
                   try {
-                    return new CodeTFSarifInput(getSha1(sarif), Files.readString(sarif));
+                    return new CodeTFSarifInput(Files.readString(sarif), getSha1(sarif));
                   } catch (IOException e) {
                     throw new RuntimeException(e);
                   }
