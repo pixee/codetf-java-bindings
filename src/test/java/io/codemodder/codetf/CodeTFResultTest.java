@@ -16,6 +16,7 @@ final class CodeTFResultTest {
             "Hardened object deserialization calls against attack",
             "Lengthier description about deserialization risks, protections, etc...",
             null,
+            null,
             Set.of("/foo/failed.java"),
             List.of(
                 new CodeTFReference(
@@ -61,6 +62,7 @@ final class CodeTFResultTest {
             "Hardened object deserialization calls against attack",
             "Lengthier description about deserialization risks, protections, etc...",
             tool,
+            null,
             Set.of("/foo/failed.java"),
             List.of(
                 new CodeTFReference(
@@ -143,6 +145,7 @@ final class CodeTFResultTest {
             "Hardened object deserialization calls against attack",
             "Lengthier description about deserialization risks, protections, etc...",
             null,
+            null,
             Set.of("/foo/failed.java"),
             List.of(
                 new CodeTFReference(
@@ -153,5 +156,13 @@ final class CodeTFResultTest {
             List.of());
 
     assertTrue(result.usesAi());
+  }
+
+  @Test
+  void it_has_failure_state() {
+    FailureState state = new FailureState(true, "reason", "exception");
+    assertTrue(state.failed());
+    assertEquals("reason", state.reason());
+    assertEquals("exception", state.exception());
   }
 }

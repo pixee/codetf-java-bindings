@@ -12,6 +12,7 @@ public final class CodeTFResult {
   private final String summary;
   private final String description;
   private final DetectionTool detectionTool;
+  private final FailureState failureState;
   private final Set<String> failedFiles;
   private final List<CodeTFReference> references;
   private final Map<String, String> properties;
@@ -24,15 +25,17 @@ public final class CodeTFResult {
       @JsonProperty(value = "summary", index = 2) final String summary,
       @JsonProperty(value = "description", index = 3) final String description,
       @JsonProperty(value = "detectionTool", index = 4) final DetectionTool detectionTool,
-      @JsonProperty(value = "failedFiles", index = 5) final Set<String> failedFiles,
-      @JsonProperty(value = "references", index = 6) final List<CodeTFReference> references,
-      @JsonProperty(value = "properties", index = 7) final Map<String, String> properties,
-      @JsonProperty(value = "changeset", index = 8) final List<CodeTFChangesetEntry> changeset,
-      @JsonProperty(value = "unfixed", index = 9) final List<UnfixedFinding> unfixedFindings) {
+      @JsonProperty(value = "failureState", index = 5) final FailureState failureState,
+      @JsonProperty(value = "failedFiles", index = 6) final Set<String> failedFiles,
+      @JsonProperty(value = "references", index = 7) final List<CodeTFReference> references,
+      @JsonProperty(value = "properties", index = 8) final Map<String, String> properties,
+      @JsonProperty(value = "changeset", index = 9) final List<CodeTFChangesetEntry> changeset,
+      @JsonProperty(value = "unfixed", index = 10) final List<UnfixedFinding> unfixedFindings) {
     this.codemod = CodeTFValidator.requireNonBlank(codemod);
     this.summary = CodeTFValidator.requireNonBlank(summary);
     this.description = CodeTFValidator.requireNonBlank(description);
     this.detectionTool = detectionTool;
+    this.failureState = failureState;
     this.failedFiles = CodeTFValidator.toImmutableCopyOrEmptyOnNull(failedFiles);
     this.references = CodeTFValidator.toImmutableCopyOrEmptyOnNull(references);
     this.properties = CodeTFValidator.toImmutableCopyOrEmptyOnNull(properties);
@@ -46,7 +49,7 @@ public final class CodeTFResult {
       final String summary,
       final String description,
       final List<CodeTFChangesetEntry> changeset) {
-    this(codemod, summary, description, null, null, null, null, changeset, null);
+    this(codemod, summary, description, null, null, null, null, null, changeset, null);
   }
 
   public String getCodemod() {
@@ -63,6 +66,10 @@ public final class CodeTFResult {
 
   public DetectionTool getDetectionTool() {
     return detectionTool;
+  }
+
+  public FailureState getFailureState() {
+    return failureState;
   }
 
   public Set<String> getFailedFiles() {
@@ -108,6 +115,8 @@ public final class CodeTFResult {
     private final CodeTFResult originalResult;
     private String updatedSummary;
     private String updatedDescription;
+
+    private FailureState failureState;
     private List<CodeTFReference> updatedReferences;
     private DetectionTool detectionTool;
     private List<CodeTFChangesetEntry> changeset;
@@ -128,6 +137,11 @@ public final class CodeTFResult {
     public Builder withDescription(final String description) {
       Objects.requireNonNull(description);
       this.updatedDescription = description;
+      return this;
+    }
+
+    public Builder withFailureState(final FailureState failureState) {
+      this.failureState = failureState;
       return this;
     }
 
@@ -171,6 +185,7 @@ public final class CodeTFResult {
           updatedSummary != null ? updatedSummary : originalResult.getSummary(),
           updatedDescription != null ? updatedDescription : originalResult.getDescription(),
           detectionTool != null ? detectionTool : originalResult.getDetectionTool(),
+          failureState != null ? failureState : originalResult.getFailureState(),
           originalResult.getFailedFiles(),
           updatedReferences != null ? updatedReferences : originalResult.getReferences(),
           originalResult.getProperties(),
