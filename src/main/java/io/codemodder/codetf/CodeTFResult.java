@@ -12,7 +12,7 @@ public final class CodeTFResult {
   private final String summary;
   private final String description;
   private final DetectionTool detectionTool;
-  private final FailureState failureState;
+  private final Failure failure;
   private final Set<String> failedFiles;
   private final List<CodeTFReference> references;
   private final Map<String, String> properties;
@@ -25,7 +25,7 @@ public final class CodeTFResult {
       @JsonProperty(value = "summary", index = 2) final String summary,
       @JsonProperty(value = "description", index = 3) final String description,
       @JsonProperty(value = "detectionTool", index = 4) final DetectionTool detectionTool,
-      @JsonProperty(value = "failureState", index = 5) final FailureState failureState,
+      @JsonProperty(value = "failure", index = 5) final Failure failure,
       @JsonProperty(value = "failedFiles", index = 6) final Set<String> failedFiles,
       @JsonProperty(value = "references", index = 7) final List<CodeTFReference> references,
       @JsonProperty(value = "properties", index = 8) final Map<String, String> properties,
@@ -35,7 +35,7 @@ public final class CodeTFResult {
     this.summary = CodeTFValidator.requireNonBlank(summary);
     this.description = CodeTFValidator.requireNonBlank(description);
     this.detectionTool = detectionTool;
-    this.failureState = failureState;
+    this.failure = failure;
     this.failedFiles = CodeTFValidator.toImmutableCopyOrEmptyOnNull(failedFiles);
     this.references = CodeTFValidator.toImmutableCopyOrEmptyOnNull(references);
     this.properties = CodeTFValidator.toImmutableCopyOrEmptyOnNull(properties);
@@ -68,8 +68,12 @@ public final class CodeTFResult {
     return detectionTool;
   }
 
-  public FailureState getFailureState() {
-    return failureState;
+  public Failure getFailureState() {
+    return failure;
+  }
+
+  public boolean failed() {
+    return failure != null;
   }
 
   public Set<String> getFailedFiles() {
@@ -116,7 +120,7 @@ public final class CodeTFResult {
     private String updatedSummary;
     private String updatedDescription;
 
-    private FailureState failureState;
+    private Failure failure;
     private List<CodeTFReference> updatedReferences;
     private DetectionTool detectionTool;
     private List<CodeTFChangesetEntry> changeset;
@@ -140,8 +144,8 @@ public final class CodeTFResult {
       return this;
     }
 
-    public Builder withFailureState(final FailureState failureState) {
-      this.failureState = failureState;
+    public Builder withFailureState(final Failure failure) {
+      this.failure = failure;
       return this;
     }
 
@@ -185,7 +189,7 @@ public final class CodeTFResult {
           updatedSummary != null ? updatedSummary : originalResult.getSummary(),
           updatedDescription != null ? updatedDescription : originalResult.getDescription(),
           detectionTool != null ? detectionTool : originalResult.getDetectionTool(),
-          failureState != null ? failureState : originalResult.getFailureState(),
+          failure != null ? failure : originalResult.getFailureState(),
           originalResult.getFailedFiles(),
           updatedReferences != null ? updatedReferences : originalResult.getReferences(),
           originalResult.getProperties(),
