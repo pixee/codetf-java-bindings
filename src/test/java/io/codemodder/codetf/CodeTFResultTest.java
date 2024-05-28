@@ -160,8 +160,7 @@ final class CodeTFResultTest {
 
   @Test
   void it_has_failure_state() {
-    FailureState state = new FailureState(true, "reason", "exception");
-    assertTrue(state.failed());
+    Failure state = new Failure("reason", "exception");
     assertEquals("reason", state.reason());
     assertEquals("exception", state.exception());
   }
