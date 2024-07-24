@@ -1,6 +1,7 @@
 package io.codemodder.codetf;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -68,7 +69,7 @@ public final class CodeTFResult {
     return detectionTool;
   }
 
-  public Failure getFailureState() {
+  public Failure getFailure() {
     return failure;
   }
 
@@ -100,6 +101,7 @@ public final class CodeTFResult {
     return changeset.stream().anyMatch(CodeTFChangesetEntry::usesAi);
   }
 
+  @JsonIgnore
   public List<FixedFinding> getFixedFindings() {
     return changeset.stream()
         .map(CodeTFChangesetEntry::getChanges)
@@ -189,7 +191,7 @@ public final class CodeTFResult {
           updatedSummary != null ? updatedSummary : originalResult.getSummary(),
           updatedDescription != null ? updatedDescription : originalResult.getDescription(),
           detectionTool != null ? detectionTool : originalResult.getDetectionTool(),
-          failure != null ? failure : originalResult.getFailureState(),
+          failure != null ? failure : originalResult.getFailure(),
           originalResult.getFailedFiles(),
           updatedReferences != null ? updatedReferences : originalResult.getReferences(),
           originalResult.getProperties(),
