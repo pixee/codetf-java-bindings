@@ -15,11 +15,11 @@ public class Failure {
     this.exception = exception;
   }
 
-  public String reason() {
+  public String getReason() {
     return reason;
   }
 
-  public String exception() {
+  public String getException() {
     return exception;
   }
 }
