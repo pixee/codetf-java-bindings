@@ -6,7 +6,6 @@
     <artifactId>codetf-java</artifactId>
     <version>4.2.0</version>
 
-
     <name>codetf-java</name>
     <description>Jackson bindings for the Code Transformation Format (CodeTF)</description>
     <url>https://github.com/pixee/codetf-java-bindings</url>
@@ -20,7 +19,7 @@
     <licenses>
         <license>
             <name>MIT License</name>
-            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <url>https://www.opensource.org/licenses/mit-license.php</url>
         </license>
     </licenses>
 
@@ -44,21 +43,22 @@
     </developers>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <fmt.goal>format</fmt.goal>
         <versions.maven-compiler-plugin>3.13.0</versions.maven-compiler-plugin>
         <versions.maven-surefire-plugin>3.4.0</versions.maven-surefire-plugin>
-        <versions.fmt-maven-plugin>2.23</versions.fmt-maven-plugin>
         <versions.maven-javadoc-plugin>3.8.0</versions.maven-javadoc-plugin>
-        <versions.nexus-staging-maven-plugin>1.6.13</versions.nexus-staging-maven-plugin>
-        <versions.maven-source-plugin>3.3.1</versions.maven-source-plugin>
         <versions.maven-gpg-plugin>3.2.5</versions.maven-gpg-plugin>
+        <versions.maven-source-plugin>3.3.1</versions.maven-source-plugin>
+        <versions.fmt-maven-plugin>2.23</versions.fmt-maven-plugin>
         <versions.jacoco-maven-plugin>0.8.12</versions.jacoco-maven-plugin>
+        <versions.nexus-staging-maven-plugin>1.6.13</versions.nexus-staging-maven-plugin>
 
-        <jackson.version>2.16.1</jackson.version>
-        <hamcrest.version>2.2</hamcrest.version>
-        <junit.jupiter.version>5.11.0</junit.jupiter.version>
-        <junit.platform.version>1.11.0</junit.platform.version>
         <commons.codec.version>1.17.1</commons.codec.version>
+        <hamcrest.version>2.2</hamcrest.version>
+        <jackson.version>2.16.1</jackson.version>
+        <junit.jupiter.version>5.11.0</junit.jupiter.version>
     </properties>
 
     <dependencies>
@@ -73,34 +73,27 @@
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>${commons.codec.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
-            <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest</artifactId>
-            <version>${hamcrest.version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -111,13 +104,29 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>5.11.0</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${commons.codec.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest</artifactId>
+                <version>${hamcrest.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>${versions.maven-source-plugin}</version>
                     <executions>
@@ -130,7 +139,6 @@
                     </executions>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${versions.maven-javadoc-plugin}</version>
                     <executions>
@@ -183,11 +191,9 @@
         </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
             </plugin>
             <plugin>
@@ -204,11 +210,9 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
             </plugin>
             <plugin>
