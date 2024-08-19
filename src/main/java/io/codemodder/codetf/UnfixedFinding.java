@@ -5,10 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 /** Describes an unfixed finding. */
-public final class UnfixedFinding {
+public final class UnfixedFinding extends Finding {
 
-  private final String id;
-  private final DetectorRule rule;
   private final String path;
   private final Integer line;
   private final String reason;
@@ -20,15 +18,18 @@ public final class UnfixedFinding {
       @JsonProperty(value = "path", index = 3) final String path,
       @JsonProperty(value = "line", index = 4) final Integer line,
       @JsonProperty(value = "reason", index = 5) final String reason) {
-    this.id = CodeTFValidator.requireNonBlank(id);
-    this.rule = Objects.requireNonNull(rule);
+    super(id, rule);
     this.path = CodeTFValidator.requireNonBlank(path);
     this.line = line;
     this.reason = CodeTFValidator.requireNonBlank(reason);
   }
 
-  public String getId() {
-    return id;
+  public UnfixedFinding(
+      @JsonProperty(value = "rule", index = 2) final DetectorRule rule,
+      @JsonProperty(value = "path", index = 3) final String path,
+      @JsonProperty(value = "line", index = 4) final Integer line,
+      @JsonProperty(value = "reason", index = 5) final String reason) {
+    this(null, rule, path, line, reason);
   }
 
   public String getPath() {
@@ -39,10 +40,6 @@ public final class UnfixedFinding {
     return reason;
   }
 
-  public DetectorRule getRule() {
-    return rule;
-  }
-
   public Integer getLine() {
     return line;
   }
@@ -50,17 +47,18 @@ public final class UnfixedFinding {
   @Override
   public boolean equals(final Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    UnfixedFinding that = (UnfixedFinding) o;
-    return Objects.equals(id, that.id)
-        && Objects.equals(rule, that.rule)
-        && Objects.equals(path, that.path)
-        && Objects.equals(line, that.line)
-        && Objects.equals(reason, that.reason);
+    if (!(o instanceof final UnfixedFinding that)) return false;
+    if (!super.equals(o)) return false;
+
+    return path.equals(that.path) && Objects.equals(line, that.line) && reason.equals(that.reason);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, rule, path, line, reason);
+    int result = super.hashCode();
+    result = 31 * result + path.hashCode();
+    result = 31 * result + Objects.hashCode(line);
+    result = 31 * result + reason.hashCode();
+    return result;
   }
 }

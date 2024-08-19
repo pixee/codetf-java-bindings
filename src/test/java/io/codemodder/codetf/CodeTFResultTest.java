@@ -112,8 +112,6 @@ final class CodeTFResultTest {
     FixedFinding finding = new FixedFinding("finding", rule);
     assertEquals("finding", finding.getId());
     assertThrows(NullPointerException.class, () -> new FixedFinding("finding", null));
-    assertThrows(IllegalArgumentException.class, () -> new FixedFinding("", rule));
-    assertThrows(IllegalArgumentException.class, () -> new FixedFinding(null, rule));
   }
 
   @Test
