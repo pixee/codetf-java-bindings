@@ -45,35 +45,30 @@
 
     <properties>
         <fmt.goal>format</fmt.goal>
-        <versions.maven-compiler-plugin>3.8.1</versions.maven-compiler-plugin>
-        <versions.maven-surefire-plugin>3.0.0-M4</versions.maven-surefire-plugin>
-        <versions.fmt-maven-plugin>2.18</versions.fmt-maven-plugin>
-        <versions.maven-javadoc-plugin>2.9.1</versions.maven-javadoc-plugin>
+        <versions.maven-compiler-plugin>3.13.0</versions.maven-compiler-plugin>
+        <versions.maven-surefire-plugin>3.4.0</versions.maven-surefire-plugin>
+        <versions.fmt-maven-plugin>2.23</versions.fmt-maven-plugin>
+        <versions.maven-javadoc-plugin>3.8.0</versions.maven-javadoc-plugin>
         <versions.nexus-staging-maven-plugin>1.6.13</versions.nexus-staging-maven-plugin>
-        <versions.maven-source-plugin>2.2.1</versions.maven-source-plugin>
-        <versions.maven-gpg-plugin>3.0.1</versions.maven-gpg-plugin>
-        <versions.jacoco-maven-plugin>0.8.7</versions.jacoco-maven-plugin>
+        <versions.maven-source-plugin>3.3.1</versions.maven-source-plugin>
+        <versions.maven-gpg-plugin>3.2.5</versions.maven-gpg-plugin>
+        <versions.jacoco-maven-plugin>0.8.12</versions.jacoco-maven-plugin>
 
-        <jackson.version>2.13.4.2</jackson.version>
-        <jackson.annotations.version>2.13.4</jackson.annotations.version>
+        <jackson.version>2.16.1</jackson.version>
         <hamcrest.version>2.2</hamcrest.version>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <junit.jupiter.version>5.8.2</junit.jupiter.version>
-        <junit.platform.version>1.8.1</junit.platform.version>
-        <commons.codec.version>1.15</commons.codec.version>
+        <junit.jupiter.version>5.11.0</junit.jupiter.version>
+        <junit.platform.version>1.11.0</junit.platform.version>
+        <commons.codec.version>1.17.1</commons.codec.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.annotations.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
@@ -107,6 +102,17 @@
         </dependency>
 
     </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <build>
         <pluginManagement>
             <plugins>
