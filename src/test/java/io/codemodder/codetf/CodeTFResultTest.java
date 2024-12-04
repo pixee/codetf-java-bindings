@@ -134,7 +134,8 @@ final class CodeTFResultTest {
   @Test
   void it_has_changeset_with_ai() {
     CodeTFAiMetadata ai = new CodeTFAiMetadata("ai", "best-model-ever", null);
-    CodeTFChangesetEntry entry = new CodeTFChangesetEntry("src/foo", "diff", List.of(), ai);
+    CodeTFChangesetEntry entry =
+        new CodeTFChangesetEntry("src/foo", "diff", List.of(), ai, null, false);
     assertTrue(entry.usesAi());
 
     final var result =
@@ -154,6 +155,16 @@ final class CodeTFResultTest {
             List.of());
 
     assertTrue(result.usesAi());
+  }
+
+  @Test
+  void it_has_changeset_with_fix_quality_metadata() {
+    CodeTFAiMetadata ai = new CodeTFAiMetadata("ai", "best-model-ever", null);
+    CodeTFChangesetEntry entry =
+        new CodeTFChangesetEntry("src/foo", "diff", List.of(), ai, Strategy.HYBRID, true);
+
+    assertEquals(entry.getStrategy(), Strategy.HYBRID);
+    assertTrue(entry.isProvisional());
   }
 
   @Test
