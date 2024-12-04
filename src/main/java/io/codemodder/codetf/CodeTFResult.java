@@ -104,9 +104,7 @@ public final class CodeTFResult {
   @JsonIgnore
   public List<FixedFinding> getFixedFindings() {
     return changeset.stream()
-        .map(CodeTFChangesetEntry::getChanges)
-        .flatMap(List::stream)
-        .map(CodeTFChange::getFixedFindings)
+        .map(CodeTFChangesetEntry::getFixedFindings)
         .flatMap(List::stream)
         .collect(Collectors.toList());
   }
