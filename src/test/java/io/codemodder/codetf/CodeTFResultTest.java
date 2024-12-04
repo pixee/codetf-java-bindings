@@ -135,7 +135,7 @@ final class CodeTFResultTest {
   void it_has_changeset_with_ai() {
     CodeTFAiMetadata ai = new CodeTFAiMetadata("ai", "best-model-ever", null);
     CodeTFChangesetEntry entry =
-        new CodeTFChangesetEntry("src/foo", "diff", List.of(), ai, null, false);
+        new CodeTFChangesetEntry("src/foo", "diff", List.of(), ai, null, false, null);
     assertTrue(entry.usesAi());
 
     final var result =
@@ -161,7 +161,7 @@ final class CodeTFResultTest {
   void it_has_changeset_with_fix_quality_metadata() {
     CodeTFAiMetadata ai = new CodeTFAiMetadata("ai", "best-model-ever", null);
     CodeTFChangesetEntry entry =
-        new CodeTFChangesetEntry("src/foo", "diff", List.of(), ai, Strategy.HYBRID, true);
+        new CodeTFChangesetEntry("src/foo", "diff", List.of(), ai, Strategy.HYBRID, true, null);
 
     assertEquals(entry.getStrategy(), Strategy.HYBRID);
     assertTrue(entry.isProvisional());
@@ -172,5 +172,92 @@ final class CodeTFResultTest {
     Failure state = new Failure("reason", "exception");
     assertEquals("reason", state.getReason());
     assertEquals("exception", state.getException());
+  }
+
+  @Test
+  void it_has_changeset_with_change_with_fixed_finding() {
+    DetectorRule rule = new DetectorRule("rule", "Here's a rule", null);
+    FixedFinding finding = new FixedFinding("finding", rule);
+    CodeTFChange change =
+        new CodeTFChange(1, null, "whatever", CodeTFDiffSide.RIGHT, null, null, List.of(finding));
+    CodeTFChangesetEntry entry = new CodeTFChangesetEntry("src/foo", "diff", List.of(change));
+    assertEquals(1, entry.getFixedFindings().size());
+
+    final var result =
+        new CodeTFResult(
+            "codemodder:java/deserialization",
+            "Hardened object deserialization calls against attack",
+            "Lengthier description about deserialization risks, protections, etc...",
+            null,
+            null,
+            Set.of("/foo/failed.java"),
+            List.of(
+                new CodeTFReference(
+                    "https://www.oracle.com/technetwork/java/seccodeguide-139067.html#8",
+                    "Oracle's Secure Coding Guidelines for Java SE")),
+            null,
+            List.of(entry),
+            List.of());
+    assertEquals(1, result.getFixedFindings().size());
+  }
+
+  @Test
+  void it_has_changeset_with_fixed_finding() {
+    DetectorRule rule = new DetectorRule("rule", "Here's a rule", null);
+    FixedFinding finding = new FixedFinding("finding", rule);
+    CodeTFChange change =
+        new CodeTFChange(1, null, "whatever", CodeTFDiffSide.RIGHT, null, null, null);
+    CodeTFChangesetEntry entry =
+        new CodeTFChangesetEntry(
+            "src/foo", "diff", List.of(change), null, null, false, List.of(finding));
+    assertEquals(1, entry.getFixedFindings().size());
+
+    final var result =
+        new CodeTFResult(
+            "codemodder:java/deserialization",
+            "Hardened object deserialization calls against attack",
+            "Lengthier description about deserialization risks, protections, etc...",
+            null,
+            null,
+            Set.of("/foo/failed.java"),
+            List.of(
+                new CodeTFReference(
+                    "https://www.oracle.com/technetwork/java/seccodeguide-139067.html#8",
+                    "Oracle's Secure Coding Guidelines for Java SE")),
+            null,
+            List.of(entry),
+            List.of());
+    assertEquals(1, result.getFixedFindings().size());
+  }
+
+  @Test
+  void it_has_multiple_changes_with_findings_and_changeset_with_findings() {
+    DetectorRule rule = new DetectorRule("rule", "Here's a rule", null);
+    FixedFinding finding = new FixedFinding("finding", rule);
+    CodeTFChange change =
+        new CodeTFChange(1, null, "whatever", CodeTFDiffSide.RIGHT, null, null, List.of(finding));
+    CodeTFChange change2 =
+        new CodeTFChange(1, null, "whatever", CodeTFDiffSide.RIGHT, null, null, List.of(finding));
+    CodeTFChangesetEntry entry =
+        new CodeTFChangesetEntry(
+            "src/foo", "diff", List.of(change, change2), null, null, false, List.of(finding));
+    assertEquals(3, entry.getFixedFindings().size());
+
+    final var result =
+        new CodeTFResult(
+            "codemodder:java/deserialization",
+            "Hardened object deserialization calls against attack",
+            "Lengthier description about deserialization risks, protections, etc...",
+            null,
+            null,
+            Set.of("/foo/failed.java"),
+            List.of(
+                new CodeTFReference(
+                    "https://www.oracle.com/technetwork/java/seccodeguide-139067.html#8",
+                    "Oracle's Secure Coding Guidelines for Java SE")),
+            null,
+            List.of(entry, entry),
+            List.of());
+    assertEquals(6, result.getFixedFindings().size());
   }
 }
