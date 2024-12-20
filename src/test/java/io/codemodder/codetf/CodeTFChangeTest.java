@@ -79,7 +79,7 @@ final class CodeTFChangeTest {
         "diffSide": "left",
         "packageActions": null,
         "parameters": null,
-        "findings": [{
+        "fixedFindings": [{
           "id": "finding-id",
           "rule": {
             "id": "java/xss",
