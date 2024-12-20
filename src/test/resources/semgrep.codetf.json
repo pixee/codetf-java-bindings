@@ -1,0 +1,771 @@
+{
+  "run": {
+    "vendor": "pixee",
+    "tool": "analysis-service",
+    "version": "0.1.0",
+    "projectName": "e6e44e63-7196-4ea2-9fe0-8aa8bf113b7d",
+    "commandLine": "codemodder --codemod-include=semgrep:javascript/nosql-parameterization,semgrep:javascript/prevent-dom-xss,semgrep:javascript/prevent-xxe,semgrep:javascript/sql-parameterization,semgrep:python/django-secure-set-cookie,semgrep:python/enable-jinja2-autoescape,semgrep:python/harden-pyyaml,semgrep:python/jwt-decode-verify,semgrep:python/llm-sql-parameterization,semgrep:python/nan-injection,semgrep:python/no-csrf-exempt,semgrep:python/parameterize-raw-sqlalchemy-text,semgrep:python/rsa-key-size,semgrep:python/sandbox-process-creation,semgrep:python/sql-parameterization,semgrep:python/subprocess-shell-false,semgrep:python/url-sandbox,semgrep:python/use-defusedxml,semgrep:java/java.lang.security.audit.object-deserialization.object-deserialization,semgrep:java/java.lang.security.audit.cookie-missing-secure-flag.cookie-missing-secure-flag,semgrep:java/java.lang.security.audit.unsafe-reflection.unsafe-reflection,semgrep:java/java.lang.security.servletresponse-writer-xss.servletresponse-writer-xss,semgrep:java/java.spring.security.injection.tainted-url-host.tainted-url-host,semgrep:java/java.lang.security.audit.sqli.jdbc-sqli.jdbc-sqli,semgrep:java/java.lang.security.audit.formatted-sql-string.formatted-sql-string,semgrep:java/java.lang.security.audit.crypto.weak-random.weak-random,semgrep:java/xxe,semgrep:java/java.lang.security.audit.overly-permissive-file-permission.overly-permissive-file-permission --sarif=/tmp/e6e44e63-7196-4ea2-9fe0-8aa8bf113b7d-tucpwn3x/analysis_inputs/35195-insecure-k8s-semgrep",
+    "elapsed": 37109,
+    "directory": "/tmp/e6e44e63-7196-4ea2-9fe0-8aa8bf113b7d-tucpwn3x/code",
+    "sarifs": []
+  },
+  "results": [
+    {
+      "codemod": "semgrep:javascript/nosql-parameterization",
+      "summary": "Fix raw NoSQL queries that are not parameterized",
+      "description": "The use of `$where` does not provide protection against NoSQL injection attacks when the query string is not parameterized. This codemod fixes potential NoSQL injection vulnerabilities by replacing `$where` clauses and correctly parameterizing raw NoSQL queries.",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:javascript/prevent-dom-xss",
+      "summary": "Replace `innerHTML`, `outerHTML`, or  `document.write` Assignment with Safer Alternatives to Prevent DOM Cross-Site Scripting",
+      "description": "`innerHTML`, `outerHTML`, and `document.write` should not be assigned to or called with user-controlled data. Instead, use safer alternatives to tread the data as plain text.",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:javascript/prevent-xxe",
+      "summary": "Set `noent` argument to `false` in `libxml.parseXml` call.",
+      "description": "Guard against XXE attacks by setting the `noent` argument to `false`. This disables parsing external entities if parsing untrusted data.",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:javascript/sql-parameterization",
+      "summary": "Fix raw SQL queries that are not parameterized",
+      "description": "This codemod refactors SQL statements to be parameterized, rather than built by hand.\n\nWithout parameterization, developers must remember to escape string inputs using the rules for that column type and database. This usually results in bugs -- and sometimes vulnerabilities. Although we can't tell for sure if your code is actually exploitable, this change will make the code more robust in case the conditions which prevent exploitation today ever go away.\n\nOur changes look something like this:\n\n```diff\nimport sqlite3\n\nname = input()\nconnection = sqlite3.connect(\"my_db.db\")\ncursor = connection.cursor()\n- cursor.execute(\"SELECT * from USERS WHERE name ='\" + name + \"'\")\n+ cursor.execute(\"SELECT * from USERS WHERE name =?\", (name, ))\n```\n",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:python/django-secure-set-cookie",
+      "summary": "Use Safe Parameters in Django Response `set_cookie` Call",
+      "description": "This codemod sets the most secure parameters when Django applications call `set_cookie` on a response object. Without these parameters, your Django application cookies may be vulnerable to being intercepted and used to gain access to sensitive data.\n\nThe changes from this codemod look like this:\n\n```diff\n from django.shortcuts import render\n def index(request):\n   resp = render(request, 'index.html')\n - resp.set_cookie('custom_cookie', 'value')\n + resp.set_cookie('custom_cookie', 'value', secure=True, httponly=True, samesite='Lax')\n   return resp\n```\n",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [
+        {
+          "url": "https://semgrep.dev/r?q=python.django.security.audit.secure-cookies.django-secure-set-cookie",
+          "description": "django-secure-set-cookie"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:python/enable-jinja2-autoescape",
+      "summary": "Enable Jinja2 Autoescape",
+      "description": "This codemod enables autoescaping of HTML content in `jinja2`. Unfortunately, the jinja2 default behavior is to not autoescape when rendering templates, which makes your applications potentially vulnerable to Cross-Site Scripting (XSS) attacks.\n\nOur codemod checks if you forgot to enable autoescape or if you explicitly disabled it. The change looks as follows:\n\n```diff\n  from jinja2 import Environment\n\n- env = Environment()\n- env = Environment(autoescape=False, loader=some_loader)\n+ env = Environment(autoescape=True)\n+ env = Environment(autoescape=True, loader=some_loader)\n  ...\n```\n",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [
+        {
+          "url": "https://owasp.org/www-community/attacks/xss/",
+          "description": "https://owasp.org/www-community/attacks/xss/"
+        },
+        {
+          "url": "https://jinja.palletsprojects.com/en/3.1.x/api/#autoescaping",
+          "description": "https://jinja.palletsprojects.com/en/3.1.x/api/#autoescaping"
+        },
+        {
+          "url": "https://semgrep.dev/r?q=python.flask.security.xss.audit.direct-use-of-jinja2.direct-use-of-jinja2",
+          "description": "direct-use-of-jinja2"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:python/harden-pyyaml",
+      "summary": "Replace unsafe `pyyaml` loader with `SafeLoader`",
+      "description": "The default loaders in PyYAML are not safe to use with untrusted data. They potentially make your application vulnerable to arbitrary code execution attacks. If you open a YAML file from an untrusted source, and the file is loaded with the default loader, an attacker could execute arbitrary code on your machine.\n\nThis codemod hardens all [`yaml.load()`](https://pyyaml.org/wiki/PyYAMLDocumentation) calls against such attacks by replacing the default loader with `yaml.SafeLoader`. This is the recommended loader for loading untrusted data. For most use cases it functions as a drop-in replacement for the default loader.\n\nCalling `yaml.load()` without an explicit loader argument is equivalent to calling it with `Loader=yaml.Loader`, which is unsafe. This usage [has been deprecated](https://github.com/yaml/pyyaml/wiki/PyYAML-yaml.load(input\\)-Deprecation) since PyYAML 5.1. This codemod will add an explicit `SafeLoader` argument to all `yaml.load()` calls that don't use an explicit loader.\n\nThe changes from this codemod look like the following:\n```diff\n  import yaml\n  data = b'!!python/object/apply:subprocess.Popen \\\\n- ls'\n- deserialized_data = yaml.load(data, yaml.Loader)\n+ deserialized_data = yaml.load(data, Loader=yaml.SafeLoader)\n```\n",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [
+        {
+          "url": "https://owasp.org/www-community/vulnerabilities/Deserialization_of_untrusted_data",
+          "description": "https://owasp.org/www-community/vulnerabilities/Deserialization_of_untrusted_data"
+        },
+        {
+          "url": "https://github.com/yaml/pyyaml/wiki/PyYAML-yaml.load(input)-Deprecation",
+          "description": "https://github.com/yaml/pyyaml/wiki/PyYAML-yaml.load(input)-Deprecation"
+        },
+        {
+          "url": "https://semgrep.dev/r?q=python.lang.security.deserialization.avoid-pyyaml-load.avoid-pyyaml-load",
+          "description": " avoid-pyyaml-load"
+        },
+        {
+          "url": "https://semgrep.dev/r?q=python.django.security.audit.avoid-insecure-deserialization.avoid-insecure-deserialization",
+          "description": "avoid-insecure-deserialization"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:python/jwt-decode-verify",
+      "summary": "Verify JWT Decode",
+      "description": "This codemod ensures calls to [jwt.decode](https://pyjwt.readthedocs.io/en/stable/api.html#jwt.decode) do not disable signature validation and other verifications. It checks that both the `verify` parameter (soon to be deprecated) and any `verify` key in the `options` dict parameter are not assigned to `False`.\n\nOur change looks as follows:\n\n```diff\n  import jwt\n  ...\n- decoded_payload = jwt.decode(encoded_jwt, SECRET_KEY, algorithms=[\"HS256\"], verify=False)\n+ decoded_payload = jwt.decode(encoded_jwt, SECRET_KEY, algorithms=[\"HS256\"], verify=True)\n  ...\n- decoded_payload = jwt.decode(encoded_jwt, SECRET_KEY, algorithms=[\"HS256\"], options={\"verify_signature\": False, \"verify_exp\": False})\n+ decoded_payload = jwt.decode(encoded_jwt, SECRET_KEY, algorithms=[\"HS256\"], options={\"verify_signature\": True, \"verify_exp\": True})\n```\n\nAny `verify` parameter not listed relies on the secure `True` default value.\n",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [
+        {
+          "url": "https://pyjwt.readthedocs.io/en/stable/api.html",
+          "description": "https://pyjwt.readthedocs.io/en/stable/api.html"
+        },
+        {
+          "url": "https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/06-Session_Management_Testing/10-Testing_JSON_Web_Tokens",
+          "description": "https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/06-Session_Management_Testing/10-Testing_JSON_Web_Tokens"
+        },
+        {
+          "url": "https://semgrep.dev/r?q=python.jwt.security.unverified-jwt-decode.unverified-jwt-decode",
+          "description": "unverified-jwt-decode"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:python/llm-sql-parameterization",
+      "summary": "Fix raw SQL queries that are not parameterized",
+      "description": "This codemod refactors SQL statements to be parameterized, rather than built by hand.\n\nWithout parameterization, developers must remember to escape string inputs using the rules for that column type and database. This usually results in bugs -- and sometimes vulnerabilities. Although we can't tell for sure if your code is actually exploitable, this change will make the code more robust in case the conditions which prevent exploitation today ever go away.\n\nOur changes look something like this:\n\n```diff\nimport sqlite3\n\nname = input()\nconnection = sqlite3.connect(\"my_db.db\")\ncursor = connection.cursor()\n- cursor.execute(\"SELECT * from USERS WHERE name ='\" + name + \"'\")\n+ cursor.execute(\"SELECT * from USERS WHERE name =?\", (name, ))\n```\n",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [
+        {
+          "path": "insecure-app/app.py",
+          "diff": "--- \n+++ \n@@ -87,8 +87,8 @@\n             username = request.form['username']\n             try:\n                 # Vulnerable SQL query using string interpolation\n-                query = \"SELECT password FROM users WHERE username = '{}'\".format(username)\n-                cursor.execute(query)\n+                query = \"SELECT password FROM users WHERE username = ?\"\n+                cursor.execute(query, (username,))\n                 result = cursor.fetchone()\n                 if result:\n                     output = f\"Password for {username}: {result[0]}\"\n",
+          "changes": [
+            {
+              "lineNumber": 90,
+              "description": "Replaced raw SQL query with a parameterized query to prevent SQL injection.",
+              "diffSide": "right",
+              "fixedFindings": [
+                {
+                  "id": "python.django.security.injection.tainted-sql-string.tainted-sql-string",
+                  "rule": {
+                    "id": "python.django.security.injection.tainted-sql-string.tainted-sql-string",
+                    "name": "Detected user input to manually construct a SQL string",
+                    "url": "https://semgrep.dev/r?q=python.django.security.injection.tainted-sql-string.tainted-sql-string"
+                  }
+                }
+              ]
+            },
+            {
+              "lineNumber": 91,
+              "description": "Updated the call site to pass the parameterized values to the query.",
+              "diffSide": "right"
+            }
+          ],
+          "ai": {
+            "provider": "openai",
+            "model": "gpt-4-turbo-2024-04-09",
+            "tokens": 0
+          },
+          "strategy": "ai",
+          "provisional": false
+        }
+      ],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:python/nan-injection",
+      "summary": "Add Validation To Untrusted Numerical Input To Disallow `Nan`",
+      "description": "Add Validation To Untrusted Numerical Input To Disallow `Nan`",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:python/no-csrf-exempt",
+      "summary": "Remove `@Csrf_Exempt` Decorator From Django View",
+      "description": "Remove `@Csrf_Exempt` Decorator From Django View",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:python/parameterize-raw-sqlalchemy-text",
+      "summary": "Parameterize raw SQL queries in SQLAlchemy",
+      "description": "The use of `sqlalchemy.text` does not provide protection against SQL injection attacks when the query string is not parameterized. This codemod fixes potential SQL injection vulnerabilities by correctly parameterizing raw SQL queries.",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:python/rsa-key-size",
+      "summary": "Change The Rsa Key Size To 2048",
+      "description": "Change The Rsa Key Size To 2048",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:python/sandbox-process-creation",
+      "summary": "Sandbox Process Creation",
+      "description": "This codemod sandboxes all instances of [subprocess.run](https://docs.python.org/3/library/subprocess.html#subprocess.run) and [subprocess.call](https://docs.python.org/3/library/subprocess.html#subprocess.call) to offer protection against attack.\n\nLeft unchecked, `subprocess.run` and `subprocess.call` can execute any arbitrary system command. If an attacker can control part of the strings used as program paths or arguments, they could execute arbitrary programs, install malware, and anything else they could do if they had a shell open on the application host.\n\nOur change introduces a sandbox which protects the application:\n\n```diff\n  import subprocess\n+ from security import safe_command\n  ...\n- subprocess.run(\"echo 'hi'\", shell=True)\n+ safe_command.run(subprocess.run, \"echo 'hi'\", shell=True)\n  ...\n- subprocess.call([\"ls\", \"-l\"])\n+ safe_command.call(subprocess.call, [\"ls\", \"-l\"])\n```\n\nThe default `safe_command` restrictions applied are the following:\n* **Prevent command chaining**. Many exploits work by injecting command separators and causing the shell to interpret a second, malicious command. The `safe_command` functions attempt to parse the given command, and throw a `SecurityException` if multiple commands are present.\n* **Prevent arguments targeting sensitive files.** There is little reason for custom code to target sensitive system files like `/etc/passwd`, so the sandbox prevents arguments that point to these files that may be targets for exfiltration.\n\nThere are [more options for sandboxing](https://github.com/pixee/python-security/blob/main/src/security/safe_command/api.py#L5) if you are interested in locking down system commands even more.\n",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [
+        {
+          "url": "https://github.com/pixee/python-security/blob/main/src/security/safe_command/api.py",
+          "description": "https://github.com/pixee/python-security/blob/main/src/security/safe_command/api.py"
+        },
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html",
+          "description": "https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html"
+        },
+        {
+          "url": "https://semgrep.dev/r?q=python.lang.security.dangerous-system-call.dangerous-system-call",
+          "description": "dangerous-system-call"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:python/sql-parameterization",
+      "summary": "Parameterize SQL Queries",
+      "description": "This codemod refactors SQL statements to be parameterized, rather than built by hand.\n\nWithout parameterization, developers must remember to escape string inputs using the rules for that column type and database. This usually results in bugs -- and sometimes vulnerabilities. Although we can't tell for sure if your code is actually exploitable, this change will make the code more robust in case the conditions which prevent exploitation today ever go away.\n\nOur changes look something like this:\n\n```diff\nimport sqlite3\n\nname = input()\nconnection = sqlite3.connect(\"my_db.db\")\ncursor = connection.cursor()\n- cursor.execute(\"SELECT * from USERS WHERE name ='\" + name + \"'\")\n+ cursor.execute(\"SELECT * from USERS WHERE name =?\", (name, ))\n```\n",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [
+        {
+          "url": "https://cwe.mitre.org/data/definitions/89.html",
+          "description": "https://cwe.mitre.org/data/definitions/89.html"
+        },
+        {
+          "url": "https://owasp.org/www-community/attacks/SQL_Injection",
+          "description": "https://owasp.org/www-community/attacks/SQL_Injection"
+        },
+        {
+          "url": "https://semgrep.dev/r?q=python.django.security.injection.sql.sql-injection-using-db-cursor-execute.sql-injection-db-cursor-execute",
+          "description": "sql-injection-db-cursor-execute"
+        },
+        {
+          "url": "https://semgrep.dev/r?q=python.lang.security.audit.formatted-sql-query.formatted-sql-query",
+          "description": "formatted-sql-query"
+        },
+        {
+          "url": "https://semgrep.dev/r?q=python.sqlalchemy.security.sqlalchemy-execute-raw-query.sqlalchemy-execute-raw-query",
+          "description": "sqlalchemy-execute-raw-query"
+        },
+        {
+          "url": "https://semgrep.dev/r?q=python.django.security.injection.tainted-sql-string.tainted-sql-string",
+          "description": "tainted-sql-string"
+        },
+        {
+          "url": "https://semgrep.dev/r?q=python.flask.security.injection.tainted-sql-string.tainted-sql-string",
+          "description": "tainted-sql-string"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:python/subprocess-shell-false",
+      "summary": "Use `shell=False` in `subprocess` Function Calls",
+      "description": "This codemod sets the `shell` keyword argument to `False` in `subprocess` module function calls that have set it to `True`.\n\nSetting `shell=True` will execute the provided command through the system shell which can lead to shell injection vulnerabilities. In the worst case this can give an attacker the ability to run arbitrary commands on your system. In most cases using `shell=False` is sufficient and leads to much safer code.\n\nThe changes from this codemod look like this:\n\n```diff\n import subprocess\n- subprocess.run(\"echo 'hi'\", shell=True)\n+ subprocess.run(\"echo 'hi'\", shell=False)\n```\n",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [
+        {
+          "url": "https://docs.python.org/3/library/subprocess.html#security-considerations",
+          "description": "https://docs.python.org/3/library/subprocess.html#security-considerations"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Code_injection#Shell_injection",
+          "description": "https://en.wikipedia.org/wiki/Code_injection#Shell_injection"
+        },
+        {
+          "url": "https://stackoverflow.com/a/3172488",
+          "description": "https://stackoverflow.com/a/3172488"
+        },
+        {
+          "url": "https://semgrep.dev/r?q=python.lang.security.audit.subprocess-shell-true.subprocess-shell-true",
+          "description": "subprocess-shell-true"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:python/url-sandbox",
+      "summary": "Sandbox URL Creation",
+      "description": "This codemod sandboxes calls to [`requests.get`](https://requests.readthedocs.io/en/latest/api/#requests.get) to be more resistant to Server-Side Request Forgery (SSRF) attacks.\n\nMost of the time when you make a `GET` request to a URL, you're intending to reference an HTTP endpoint, like an internal microservice. However, URLs can point to local file system files, a Gopher stream in your local network, a JAR file on a remote Internet site, and all kinds of other unexpected and undesirable outcomes. When the URL values are influenced by attackers, they can trick your application into fetching internal resources, running malicious code, or otherwise harming the system.\nConsider the following code for a Flask app:\n\n```python\nfrom flask import Flask, request\nimport requests\n\napp = Flask(__name__)\n\n@app.route(\"/request-url\")\ndef request_url():\n    url = request.args[\"loc\"]\n    resp = requests.get(url)\n    ...\n```\n\nIn this case, an attacker could supply a value like `\"http://169.254.169.254/user-data/\"` and attempt to access user information.\n\nOur changes introduce sandboxing around URL creation that force developers to specify some boundaries on the types of URLs they expect to create:\n\n```diff\n  from flask import Flask, request\n- import requests\n+ from security import safe_requests\n\n  app = Flask(__name__)\n\n  @app.route(\"/request-url\")\n  def request_url():\n    url = request.args[\"loc\"]\n-   resp = requests.get(url)\n+   resp = safe_requests.get(url)\n    ...\n```\n\nThis change alone reduces attack surface significantly because the default behavior of `safe_requests.get` raises a `SecurityException` if\na user attempts to access a known infrastructure location, unless specifically disabled.\n\n\nIf you have feedback on this codemod, [please let us know](mailto:feedback@pixee.ai)!\n\n## F.A.Q. \n\n### Why does this codemod require a Pixee dependency?\n\nWe always prefer to use built-in Python functions or one from a well-known and trusted community dependency. However, we cannot find any such control. If you know of one, [please let us know](https://ask.pixee.ai/feedback).\n\n### Why is this codemod marked as Merge After Cursory Review?\n\nBy default, the protection only weaves in 2 checks, which we believe will not cause any issues with the vast majority of code:\n1. The given URL must be HTTP/HTTPS.\n2. The given URL must not point to a \"well-known infrastructure target\", which includes things like AWS Metadata Service endpoints, and internal routers (e.g., 192.168.1.1) which are common targets of attacks.\n\nHowever, on rare occasions an application may use a URL protocol like \"file://\" or \"ftp://\" in backend or middleware code.\n\nIf you want to allow those protocols, change the incoming PR to look more like this and get the best security possible:\n\n```diff\n-resp = requests.get(url)\n+resp = safe_requests.get(url, allowed_protocols=(\"ftp\",))\n```\n\n## Dependency Updates\n\nThis codemod relies on an external dependency. We have automatically added this dependency to your project's `requirements.txt` file. \n\nThis library holds security tools for protecting Python API calls. \n\nThere are a number of places where Python project dependencies can be expressed, including `setup.py`, `pyproject.toml`, `setup.cfg`, and `requirements.txt` files. If this change is incorrect, or if you are using another packaging system such as `poetry`, it may be necessary for you to manually add the dependency to the proper location in your project.\n",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [
+        {
+          "url": "https://github.com/pixee/python-security/blob/main/src/security/safe_requests/api.py",
+          "description": "https://github.com/pixee/python-security/blob/main/src/security/safe_requests/api.py"
+        },
+        {
+          "url": "https://portswigger.net/web-security/ssrf",
+          "description": "https://portswigger.net/web-security/ssrf"
+        },
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html",
+          "description": "https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html"
+        },
+        {
+          "url": "https://www.rapid7.com/blog/post/2021/11/23/owasp-top-10-deep-dive-defending-against-server-side-request-forgery/",
+          "description": "https://www.rapid7.com/blog/post/2021/11/23/owasp-top-10-deep-dive-defending-against-server-side-request-forgery/"
+        },
+        {
+          "url": "https://blog.assetnote.io/2021/01/13/blind-ssrf-chains/",
+          "description": "https://blog.assetnote.io/2021/01/13/blind-ssrf-chains/"
+        },
+        {
+          "url": "https://semgrep.dev/r?q=python.django.security.injection.ssrf.ssrf-injection-requests.ssrf-injection-requests",
+          "description": "ssrf-injection-requests"
+        },
+        {
+          "url": "https://semgrep.dev/r?q=python.flask.security.injection.ssrf-requests.ssrf-requests",
+          "description": "ssrf-requests"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [
+        {
+          "path": "insecure-app/app.py",
+          "diff": "--- \n+++ \n@@ -2,8 +2,8 @@\n import subprocess\n import os\n import sqlite3\n-import requests\n from lxml import etree\n+from security import safe_requests\n \n # Example hardcoded AWS credentials (sensitive data leakage)\n aws_access_key_id = 'AKIA2JAPX77RGLB664VE'\n@@ -77,7 +77,7 @@\n         elif 'url' in request.form:\n             url = request.form['url']\n             try:\n-                response = requests.get(url)\n+                response = safe_requests.get(url)\n                 output = f\"SSRF Response: {response.text[:200]}\"\n             except Exception as e:\n                 output = f\"SSRF Error: {e}\"\n",
+          "changes": [
+            {
+              "lineNumber": 80,
+              "description": "Switch use of requests for security.safe_requests",
+              "diffSide": "right",
+              "fixedFindings": [
+                {
+                  "id": "python.django.security.injection.ssrf.ssrf-injection-requests.ssrf-injection-requests",
+                  "rule": {
+                    "id": "python.django.security.injection.ssrf.ssrf-injection-requests.ssrf-injection-requests",
+                    "name": "ssrf-injection-requests",
+                    "url": "https://semgrep.dev/r?q=python.django.security.injection.ssrf.ssrf-injection-requests.ssrf-injection-requests"
+                  }
+                },
+                {
+                  "id": "python.flask.security.injection.ssrf-requests.ssrf-requests",
+                  "rule": {
+                    "id": "python.flask.security.injection.ssrf-requests.ssrf-requests",
+                    "name": "ssrf-requests",
+                    "url": "https://semgrep.dev/r?q=python.flask.security.injection.ssrf-requests.ssrf-requests"
+                  }
+                }
+              ]
+            }
+          ],
+          "strategy": "deterministic",
+          "provisional": false
+        },
+        {
+          "path": "insecure-app/requirements.txt",
+          "diff": "--- \n+++ \n@@ -2,3 +2,4 @@\n cryptography==3.3.2\n flask==3.0.2\n #cryptograpy==3.3.2\n+security==1.3.1\n",
+          "changes": [
+            {
+              "lineNumber": 5,
+              "description": "This library holds security tools for protecting Python API calls.\n\nLicense: [MIT](https://opensource.org/license/MIT/) ✅ [Open Source](https://github.com/pixee/python-security) ✅ [More facts](https://pypi.org/project/security/)\n",
+              "diffSide": "right",
+              "properties": {
+                "contextual_description": true,
+                "contextual_description_position": "right"
+              },
+              "packageActions": [
+                {
+                  "action": "add",
+                  "result": "completed",
+                  "package": "security==1.3.1"
+                }
+              ]
+            }
+          ],
+          "provisional": false
+        }
+      ],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:python/use-defusedxml",
+      "summary": "Use `defusedxml` for Parsing XML",
+      "description": "You might be surprised to learn that Python's built-in XML libraries are [considered insecure](https://docs.python.org/3/library/xml.html#xml-vulnerabilities) against various kinds of attacks.\n\nIn fact, the [Python documentation itself](https://docs.python.org/3/library/xml.html#the-defusedxml-package) recommends the use of [defusedxml](https://pypi.org/project/defusedxml/) for parsing untrusted XML data. `defusedxml` is an [open-source](https://github.com/tiran/defusedxml), permissively licensed project that is intended as a drop-in replacement for Python's standard library XML parsers.\n\nThis codemod updates all relevant uses of the standard library parsers with safe versions from `defusedxml`. It also adds the `defusedxml` dependency to your project where possible.\n\nThe changes from this codemod look like this:\n```diff\n- from xml.etree.ElementTree import parse\n+ import defusedxml.ElementTree\n\n- et = parse('data.xml')\n+ et = defusedxml.ElementTree.parse('data.xml')\n```\n",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [
+        {
+          "url": "https://docs.python.org/3/library/xml.html#xml-vulnerabilities",
+          "description": "https://docs.python.org/3/library/xml.html#xml-vulnerabilities"
+        },
+        {
+          "url": "https://docs.python.org/3/library/xml.html#the-defusedxml-package",
+          "description": "https://docs.python.org/3/library/xml.html#the-defusedxml-package"
+        },
+        {
+          "url": "https://pypi.org/project/defusedxml/",
+          "description": "https://pypi.org/project/defusedxml/"
+        },
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html",
+          "description": "https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html"
+        },
+        {
+          "url": "https://semgrep.dev/r?q=python.lang.security.use-defused-xml-parse.use-defused-xml-parse",
+          "description": "use-defused-xml-parse"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:java/java.lang.security.audit.object-deserialization.object-deserialization",
+      "summary": "Introduced protections against deserialization attacks",
+      "description": "This change fixes Java deserialization vulnerabilities. Even a simple operation like an object deserialization is an opportunity to yield control of your system to an attacker. In fact, without specific, non-default protections, any object deserialization call can lead to arbitrary code execution. The JavaDoc [now even says](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/ObjectInputFilter.html):\n\n> Deserialization of untrusted data is inherently dangerous and should be avoided.\n\nLet's discuss the attack. In Java, types can customize how they should be deserialized by specifying a `readObject()` method like this real example from an [old version of Spring](https://github.com/spring-projects/spring-framework/blob/4.0.x/spring-core/src/main/java/org/springframework/core/SerializableTypeWrapper.java#L404):\n\n```java\nstatic class MethodInvokeTypeProvider implements TypeProvider {\n    private final TypeProvider provider;\n    private final String methodName;\n\n    private void readObject(ObjectInputStream inputStream) {\n        inputStream.defaultReadObject();\n        Method method = ReflectionUtils.findMethod(\n                this.provider.getType().getClass(),\n                this.methodName\n        );\n        this.result = ReflectionUtils.invokeMethod(method,this.provider.getType());\n    }\n}\n```\n\nReflecting on this code reveals a terrifying conclusion. If an attacker presents this object to be deserialized by your app, the runtime will take a class and a method name from the attacker and then call them. Note that an attacker can provide any serliazed type -- it doesn't have to be the one you're expecting, and it will still deserialize.\n\nAttackers can repurpose the logic of selected types within the Java classpath (called \"gadgets\") and chain them together to achieve arbitrary remote code execution. There are a limited number of publicly known gadgets that can be used for attack, and our change simply inserts an [ObjectInputFilter](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/ObjectInputStream.html#setObjectInputFilter(java.io.ObjectInputFilter)) into the `ObjectInputStream` to prevent them from being used.\n\n```diff\n+ import io.github.pixee.security.ObjectInputFilters.createSafeObjectInputStream;\n- ObjectInputStream ois = new ObjectInputStream(is);\n+ ObjectInputStream ois = createSafeObjectInputStream(is);\n  AcmeObject acme = (AcmeObject)ois.readObject();\n```\n\nThis is a tough vulnerability class to understand, but it is deadly serious. It offers the highest impact possible (remote code execution), it's a common vulnerability (it's in the OWASP Top 10), and exploitation is easy enough that automated exploitation is possible. It's best to remove deserialization entirely, but our protections is effective against all known exploitation strategies.\n",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html",
+          "description": "https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html"
+        },
+        {
+          "url": "https://portswigger.net/web-security/deserialization/exploiting",
+          "description": "https://portswigger.net/web-security/deserialization/exploiting"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [
+        {
+          "path": "insecure-java/src/main/java/com/example/insecurejava/UnsafeDeserializationController.java",
+          "diff": "--- UnsafeDeserializationController.java\n+++ UnsafeDeserializationController.java\n@@ -1,4 +1,5 @@\n package com.example.insecurejava;\n+import static io.github.pixee.security.ObjectInputFilters.createSafeObjectInputStream;\n import org.springframework.http.HttpStatus;\n import org.springframework.http.ResponseEntity;\n import org.springframework.web.bind.annotation.PostMapping;\n@@ -13,7 +14,7 @@\n     @PostMapping(\"/unsafeDeserialize\")\n     public ResponseEntity<String> unsafeDeserialization(@RequestBody byte[] data) {\n         try {\n-            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));\n+            ObjectInputStream ois = createSafeObjectInputStream(new ByteArrayInputStream(data));\n             Object deserializedObject = ois.readObject();\n             return ResponseEntity.ok(\"Object deserialized: \" + deserializedObject.toString());\n         } catch (Exception e) {",
+          "changes": [
+            {
+              "lineNumber": 16,
+              "description": "Hardened the deserialization call by introducing a filter that prevents known malicious gadgets from executing arbitrary code",
+              "diffSide": "left",
+              "properties": {},
+              "packageActions": [
+                {
+                  "action": "add",
+                  "result": "failed",
+                  "package": "pkg:maven/io.github.pixee/java-security-toolkit@1.2.1"
+                }
+              ],
+              "fixedFindings": [
+                {
+                  "rule": {
+                    "id": "java.lang.security.audit.object-deserialization.object-deserialization",
+                    "name": "Insecure Deserialization",
+                    "url": "https://semgrep.dev/playground/r/java.lang.security.audit.object-deserialization.object-deserialization"
+                  }
+                }
+              ]
+            }
+          ],
+          "strategy": "deterministic",
+          "provisional": false
+        }
+      ],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:java/java.lang.security.audit.cookie-missing-secure-flag.cookie-missing-secure-flag",
+      "summary": "Added secure flag to HTTP cookies",
+      "description": "This change marks new cookies sent in the HTTP with the [\"secure\" flag](https://owasp.org/www-community/controls/SecureCookieAttribute). This flag, despite its ambitious name, only provides one type of protection: confidentiality. Cookies with this flag are guaranteed by the browser never to be sent over a cleartext channel (\"http://\") and only sent over secure channels (\"https://\").\n\nOur change introduces this flag with a simple 1-line statement:\n\n```diff\n  Cookie cookie = new Cookie(\"my_cookie\", userCookieValue);\n+ cookie.setSecure(true);\n  response.addCookie(cookie);\n```\n\nNote: this code change **may cause issues** with the application if any of the places this code runs (in CI, pre-production or in production) are running in non-HTTPS protocol.\n",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [
+        {
+          "url": "https://owasp.org/www-community/controls/SecureCookieAttribute",
+          "description": "https://owasp.org/www-community/controls/SecureCookieAttribute"
+        },
+        {
+          "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies",
+          "description": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies"
+        },
+        {
+          "url": "https://cwe.mitre.org/data/definitions/614.html",
+          "description": "https://cwe.mitre.org/data/definitions/614.html"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:java/java.lang.security.audit.unsafe-reflection.unsafe-reflection",
+      "summary": "Introduced sandboxing to reflection calls to prevent abuse",
+      "description": "This change fixes [Reflection Injection](https://owasp.org/www-community/vulnerabilities/Unsafe_use_of_Reflection) vulnerabilities by limiting what types can be loaded. \n\nWithout a protection like this, attackers can cause arbitrary classes to be loaded, methods to be executed, etc., in your application, which could lead to remote code execution, denial of service, or other unwanted behaviors.\n\nDepending on how the reflection APIs are used and what types are available on the classpath, this vulnerability can be quite dangerous, and in fact GitHub itself [had a High-severity vulnerability of this type recently](https://github.com/advisories/GHSA-g39r-hh73-78xj) .\n\nThis change can be improved further by adding more restrictions like this available in the [`Reflection` API](https://github.com/pixee/java-security-toolkit/blob/main/src/main/java/io/github/pixee/security/Reflection.java).\n",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [
+        {
+          "url": "https://cwe.mitre.org/data/definitions/470.html",
+          "description": "https://cwe.mitre.org/data/definitions/470.html"
+        },
+        {
+          "url": "https://owasp.org/www-community/vulnerabilities/Unsafe_use_of_Reflection",
+          "description": "https://owasp.org/www-community/vulnerabilities/Unsafe_use_of_Reflection"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:java/java.lang.security.servletresponse-writer-xss.servletresponse-writer-xss",
+      "summary": "Introduced protections against XSS",
+      "description": "This change fixes introduces HTML encoding to fix [Reflected Cross-Site Scripting (XSS)](https://portswigger.net/web-security/cross-site-scripting) vulnerabilities. XSS is a vulnerability that is tricky to understand initially, but really easy to exploit.\n\nConsider the following example code:\n\n```java\nWelcome to our site <%= request.getParameter(\"name\") %>\n```\n\nAn attacker could construct a link with an HTTP parameter `name` containing malicious JavaScript and send it to the victims, and if they click it, cause it to execute in the victims' browsers in the domain context. This could allow attackers to exfiltrate session cookies and spoof their identity, perform actions on victim's behalf, and more generally \"do anything\" as that user.\n\nOur changes introduce an HTML-encoding mechanism that look something like this:\n\n```diff\n- Welcome to our site <%= request.getParameter(\"name\") %>\n+ Welcome to our site <%= org.owasp.encoder.Encode.forHtml(request.getParameter(\"name\")) %>\n```\n\nThis change neutralizes the control characters that attackers would use to execute code. Depending on the context in which the output is rendered (e.g., inside HTML tags, HTML attributes, in JavaScript, quoted contexts, etc.), you may need to use another encoder. Check out the [OWASP XSS Prevention CheatSheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html) to learn more about these cases and other controls you may need.\n",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [
+        {
+          "url": "https://portswigger.net/web-security/cross-site-scripting",
+          "description": "https://portswigger.net/web-security/cross-site-scripting"
+        },
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html",
+          "description": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        },
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html",
+          "description": "https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:java/java.spring.security.injection.tainted-url-host.tainted-url-host",
+      "summary": "Sandboxed URL creation to prevent SSRF attacks",
+      "description": "This change sandboxes the creation of [`java.net.URL`](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URL.html) objects so they will be more resistant to Server-Side Request Forgery (SSRF) attacks.\n\nMost of the time when you create a URL, you're intending to reference an HTTP endpoint, like an internal microservice. However, URLs can point to local file system files, a Gopher stream in your local network, a JAR file on a remote Internet site, and all kinds of other unexpected and undesirable stuff. When the URL values are influenced by attackers, they can trick your application into fetching internal resources, running malicious code, or otherwise harming the system. Consider the following code:\n\n```java\nString url = userInput.getServiceAddress();\nreturn IOUtils.toString(new URL(url).openConnection());\n```\n\nIn this case, an attacker could supply a value like `jar:file:/path/to/appserver/lib.jar` and attempt to read the contents of your application's code.\n\nOur changes introduce sandboxing around URL creation that force the developers to specify some boundaries on the types of URLs they expect to create:\n\n```diff\n+ import io.github.pixee.security.Urls;\n+ import io.github.pixee.security.HostValidator;\n  ...\n  String url = userInput.getServiceAddress();\n- URL u = new URL(url);\n+ URL u = Urls.create(url, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);\n  InputStream is = u.openConnection();\n```\n\nThis change alone reduces attack surface significantly, but can be enhanced to create even more security by specifying some controls around the hosts we expect to connect with:\n\n```diff\n+ import io.github.pixee.security.Urls;\n+ import io.github.pixee.security.HostValidator;\n  ...\n  HostValidator allowsOnlyGoodDotCom = HostValidator.fromAllowedHostPattern(Pattern.compile(\"good\\\\.com\"));\n  URL u = Urls.create(url, Urls.HTTP_PROTOCOLS, allowsOnlyGoodDotCom);\n```\n\nNote: Beware temptation to write some validation on your own. Parsing URLs is difficult and differences between parsers in validation and execution will certainly lead to exploits as attackers [have repeatedly proven](https://www.blackhat.com/docs/us-17/thursday/us-17-Tsai-A-New-Era-Of-SSRF-Exploiting-URL-Parser-In-Trending-Programming-Languages.pdf).\n",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [
+        {
+          "url": "https://www.hacksplaining.com/prevention/ssrf",
+          "description": "https://www.hacksplaining.com/prevention/ssrf"
+        },
+        {
+          "url": "https://portswigger.net/web-security/ssrf",
+          "description": "https://portswigger.net/web-security/ssrf"
+        },
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html",
+          "description": "https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html"
+        },
+        {
+          "url": "https://www.rapid7.com/blog/post/2021/11/23/owasp-top-10-deep-dive-defending-against-server-side-request-forgery/",
+          "description": "https://www.rapid7.com/blog/post/2021/11/23/owasp-top-10-deep-dive-defending-against-server-side-request-forgery/"
+        },
+        {
+          "url": "https://blog.assetnote.io/2021/01/13/blind-ssrf-chains/",
+          "description": "https://blog.assetnote.io/2021/01/13/blind-ssrf-chains/"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:java/java.lang.security.audit.sqli.jdbc-sqli.jdbc-sqli",
+      "summary": "Refactored to use parameterized SQL APIs",
+      "description": "This change refactors SQL statements to be parameterized, rather than built by hand.\n\nWithout parameterization, developers must remember to escape inputs using the rules for that database. It's usually buggy, at the least -- and sometimes vulnerable.\n\nOur changes look something like this:\n\n```diff\n- Statement stmt = connection.createStatement();\n- ResultSet rs = stmt.executeQuery(\"SELECT * FROM users WHERE name = '\" + user + \"'\");\n+ PreparedStatement stmt = connection.prepareStatement(\"SELECT * FROM users WHERE name = ?\");\n+ stmt.setString(1, user);\n+ ResultSet rs = stmt.executeQuery();\n```\n",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html",
+          "description": "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html"
+        },
+        {
+          "url": "https://cwe.mitre.org/data/definitions/89.html",
+          "description": "https://cwe.mitre.org/data/definitions/89.html"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:java/java.lang.security.audit.formatted-sql-string.formatted-sql-string",
+      "summary": "Refactored to use parameterized SQL APIs",
+      "description": "This change refactors SQL statements to be parameterized, rather than built by hand.\n\nWithout parameterization, developers must remember to escape inputs using the rules for that database. It's usually buggy, at the least -- and sometimes vulnerable.\n\nOur changes look something like this:\n\n```diff\n- Statement stmt = connection.createStatement();\n- ResultSet rs = stmt.executeQuery(\"SELECT * FROM users WHERE name = '\" + user + \"'\");\n+ PreparedStatement stmt = connection.prepareStatement(\"SELECT * FROM users WHERE name = ?\");\n+ stmt.setString(1, user);\n+ ResultSet rs = stmt.executeQuery();\n```\n",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html",
+          "description": "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html"
+        },
+        {
+          "url": "https://cwe.mitre.org/data/definitions/89.html",
+          "description": "https://cwe.mitre.org/data/definitions/89.html"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:java/java.lang.security.audit.crypto.weak-random.weak-random",
+      "summary": "Introduced protections against predictable RNG abuse",
+      "description": "This change replaces all new instances of `java.util.Random` with the marginally slower, but much more secure `java.security.SecureRandom`.\n\nWe have to work pretty hard to get computers to generate genuinely unguessable random bits. The `java.util.Random` type uses a method of pseudo-random number generation that unfortunately emits fairly predictable numbers.\n\nIf the numbers it emits are predictable, then it's obviously not safe to use in cryptographic operations, file name creation, token construction, password generation, and anything else that's related to security. In fact, it may affect security even if it's not directly obvious.\n\nSwitching to a more secure version is simple and our changes all look something like this:\n\n```diff\n- Random r = new Random();\n+ Random r = new java.security.SecureRandom();\n```\n",
+      "detectionTool": {
+        "name": "Semgrep"
+      },
+      "references": [
+        {
+          "url": "https://owasp.org/www-community/vulnerabilities/Insecure_Randomness",
+          "description": "https://owasp.org/www-community/vulnerabilities/Insecure_Randomness"
+        },
+        {
+          "url": "https://metebalci.com/blog/everything-about-javas-securerandom/",
+          "description": "https://metebalci.com/blog/everything-about-javas-securerandom/"
+        },
+        {
+          "url": "https://cwe.mitre.org/data/definitions/330.html",
+          "description": "https://cwe.mitre.org/data/definitions/330.html"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:java/xxe",
+      "summary": "Introduced protections against XXE attacks",
+      "description": "This change prevents XML parsing APIs from resolving external entities, which can protect you from arbitrary code execution, sensitive data exfiltration, and probably a bunch more evil things attackers are still discovering.\n\nWithout this protection, attackers can cause your parser to retrieve sensitive information with attacks like this:\n\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE foo [ <!ENTITY xxe SYSTEM \"file:///etc/passwd\"> ]>\n<book>\n    <title>&xxe;</title>\n</book>\n```\n\nYes, it's pretty insane that this is the default behavior. Our change hardens the factories created with the necessary security features to prevent your parser from resolving external entities.\n",
+      "references": [
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html",
+          "description": "https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html"
+        },
+        {
+          "url": "https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing",
+          "description": "https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing"
+        },
+        {
+          "url": "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/XXE%20Injection/README.md",
+          "description": "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/XXE%20Injection/README.md"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    },
+    {
+      "codemod": "semgrep:java/java.lang.security.audit.overly-permissive-file-permission.overly-permissive-file-permission",
+      "summary": "Fixed overly permissive file permissions (issue discovered by Semgrep)",
+      "description": "This change removes excessive privilege from a file that appears to be overly permissive. Files can be granted privileges to the file's owner, the file owner's group, or \"others\" -- meaning anyone else. It is hard to imagine the need for a file to be readable, writable or executable by anyone other than the file's owner or the file owner's group in modern software development. \n\nIf a file is readable by \"others\", it could be read by a malicious system user to retrieve sensitive information or useful implementation details. If the file is writable by \"others\", the application could be tricked into performing actions on data provide by malicious users. Allowing execution of a file by \"others\" could allow malicious users to run arbitrary code on the server. \n\nOur changes look something like this:\n\n```diff\n  Set<PosixFilePermission> startupPermissions = new HashSet<PosixFilePermission>();\n- startupPermissions.add(PosixFilePermission.OTHERS_WRITE);\n+ startupPermissions.add(PosixFilePermission.GROUP_WRITE);\n  Files.setPosixFilePermissions(startupScript, startupPermissions);\n  \n- Set<PosixFilePermission> shutdownPermissions = PosixFilePermissions.fromString(\"rwxrwxrwx\");\n+ Set<PosixFilePermission> shutdownPermissions = PosixFilePermissions.fromString(\"rwxrwx---\");\n  Files.setPosixFilePermissions(shutdownScript, shutdownPermissions);\n```\n\nNote: It's worth considering whether you could use a more restrictive permission than `GROUP_WRITE` here. For example, if the file is owned by the same user that's running the application, you could use `OWNER_WRITE` instead.\n",
+      "references": [
+        {
+          "url": "https://find-sec-bugs.github.io/bugs.htm#OVERLY_PERMISSIVE_FILE_PERMISSION",
+          "description": "https://find-sec-bugs.github.io/bugs.htm#OVERLY_PERMISSIVE_FILE_PERMISSION"
+        },
+        {
+          "url": "https://registry.semgrep.dev/rule/java.lang.security.audit.overly-permissive-file-permission.overly-permissive-file-permission",
+          "description": "https://registry.semgrep.dev/rule/java.lang.security.audit.overly-permissive-file-permission.overly-permissive-file-permission"
+        },
+        {
+          "url": "https://cwe.mitre.org/data/definitions/732.html",
+          "description": "https://cwe.mitre.org/data/definitions/732.html"
+        }
+      ],
+      "properties": {},
+      "failedFiles": [],
+      "changeset": [],
+      "unfixedFindings": []
+    }
+  ]
+}
