@@ -3,6 +3,7 @@ package io.codemodder.codetf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
@@ -67,6 +68,21 @@ final class DeserializeReportTest {
     assertThat(changeset.get(1).getChanges().get(0).getDiffSide(), equalTo(CodeTFDiffSide.LEFT));
 
     assertThat(report.hasCodeChanges(), equalTo(true));
+  }
+
+  @Test
+  void it_deserializes_fixed_findings() throws IOException {
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    File file = new File("src/test/resources/semgrep.codetf.json");
+    CodeTFReport report = mapper.readValue(file, CodeTFReport.class);
+    for (final CodeTFResult result : report.getResults()) {
+      for (CodeTFChangesetEntry entry : result.getChangeset()) {
+        assertThat(entry.getFixedFindings(), notNullValue());
+        for (CodeTFChange change : entry.getChanges()) {
+          assertThat(change.getFixedFindings(), notNullValue());
+        }
+      }
+    }
   }
 
   @Test
