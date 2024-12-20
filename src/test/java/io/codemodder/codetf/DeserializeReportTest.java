@@ -73,8 +73,10 @@ final class DeserializeReportTest {
   @Test
   void it_deserializes_fixed_findings() throws IOException {
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    File file = new File("src/test/resources/semgrep.codetf.json");
-    CodeTFReport report = mapper.readValue(file, CodeTFReport.class);
+    final CodeTFReport report;
+    try (var is = DeserializeReportTest.class.getResourceAsStream("/semgrep.codetf.json")) {
+      report = mapper.readValue(is, CodeTFReport.class);
+    }
     for (final CodeTFResult result : report.getResults()) {
       for (CodeTFChangesetEntry entry : result.getChangeset()) {
         assertThat(entry.getFixedFindings(), notNullValue());
@@ -87,8 +89,11 @@ final class DeserializeReportTest {
 
   @Test
   void it_answers_correctly_if_results_but_no_changes() throws IOException {
-    File file = new File("src/test/resources/no_changes_but_results.codetf.json");
-    CodeTFReport report = mapper.readValue(file, CodeTFReport.class);
+    final CodeTFReport report;
+    try (var is =
+        DeserializeReportTest.class.getResourceAsStream("/no_changes_but_results.codetf.json")) {
+      report = mapper.readValue(is, CodeTFReport.class);
+    }
     assertThat(report.hasCodeChanges(), equalTo(false));
   }
 }
