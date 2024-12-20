@@ -31,7 +31,7 @@ public final class CodeTFChange {
       @JsonProperty("diffSide") final CodeTFDiffSide diffSide,
       @JsonProperty("packageActions") final List<CodeTFPackageAction> packageActions,
       @JsonProperty("parameters") final List<CodeTFParameter> parameters,
-      @JsonProperty("findings") final List<FixedFinding> fixedFindings) {
+      @JsonProperty("fixedFindings") final List<FixedFinding> fixedFindings) {
 
     if (lineNumber < 1) {
       throw new IllegalArgumentException("line number must be positive");
