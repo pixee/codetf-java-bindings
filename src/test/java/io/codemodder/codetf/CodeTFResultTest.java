@@ -135,7 +135,7 @@ final class CodeTFResultTest {
   void it_has_changeset_with_ai() {
     CodeTFAiMetadata ai = new CodeTFAiMetadata("ai", "best-model-ever", null);
     CodeTFChangesetEntry entry =
-        new CodeTFChangesetEntry("src/foo", "diff", List.of(), ai, null, false, null);
+        new CodeTFChangesetEntry("src/foo", "diff", List.of(), ai, null, false, null, null);
     assertTrue(entry.usesAi());
 
     final var result =
@@ -160,10 +160,23 @@ final class CodeTFResultTest {
   @Test
   void it_has_changeset_with_fix_quality_metadata() {
     CodeTFAiMetadata ai = new CodeTFAiMetadata("ai", "best-model-ever", null);
+
+    FixQuality fixQuality =
+        new FixQuality(
+            new FixRating("its safe", 100),
+            new FixRating("its effective", 99),
+            new FixRating("its clean", 98));
     CodeTFChangesetEntry entry =
-        new CodeTFChangesetEntry("src/foo", "diff", List.of(), ai, Strategy.HYBRID, true, null);
+        new CodeTFChangesetEntry(
+            "src/foo", "diff", List.of(), ai, Strategy.HYBRID, true, null, fixQuality);
 
     assertEquals(entry.getStrategy(), Strategy.HYBRID);
+
+    assertEquals(entry.getFixQuality(), fixQuality);
+    assertEquals(fixQuality.getSafetyRating().score(), 100);
+    assertEquals(fixQuality.getEffectivenessRating().score(), 99);
+    assertEquals(fixQuality.getCleanlinessRating().score(), 98);
+
     assertTrue(entry.isProvisional());
   }
 
@@ -209,7 +222,7 @@ final class CodeTFResultTest {
         new CodeTFChange(1, null, "whatever", CodeTFDiffSide.RIGHT, null, null, null);
     CodeTFChangesetEntry entry =
         new CodeTFChangesetEntry(
-            "src/foo", "diff", List.of(change), null, null, false, List.of(finding));
+            "src/foo", "diff", List.of(change), null, null, false, List.of(finding), null);
     assertEquals(1, entry.getFixedFindings().size());
 
     final var result =
@@ -240,7 +253,7 @@ final class CodeTFResultTest {
         new CodeTFChange(1, null, "whatever", CodeTFDiffSide.RIGHT, null, null, List.of(finding));
     CodeTFChangesetEntry entry =
         new CodeTFChangesetEntry(
-            "src/foo", "diff", List.of(change, change2), null, null, false, List.of(finding));
+            "src/foo", "diff", List.of(change, change2), null, null, false, List.of(finding), null);
     assertEquals(3, entry.getFixedFindings().size());
 
     final var result =
