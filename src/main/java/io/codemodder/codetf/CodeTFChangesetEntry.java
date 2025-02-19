@@ -21,6 +21,8 @@ public final class CodeTFChangesetEntry {
 
   private final List<FixedFinding> fixedFindings;
 
+  private final FixQuality fixQuality;
+
   @JsonCreator
   public CodeTFChangesetEntry(
       @JsonProperty("path") final String path,
@@ -29,7 +31,8 @@ public final class CodeTFChangesetEntry {
       @JsonProperty("ai") final CodeTFAiMetadata ai,
       @JsonProperty("strategy") final Strategy strategy,
       @JsonProperty("provisional") final boolean provisional,
-      @JsonProperty("fixedFindings") final List<FixedFinding> fixedFindings) {
+      @JsonProperty("fixedFindings") final List<FixedFinding> fixedFindings,
+      @JsonProperty("fixQuality") final FixQuality fixQuality) {
     this.path = CodeTFValidator.requireRelativePath(path);
     this.diff = CodeTFValidator.requireNonBlank(diff);
     this.changes = CodeTFValidator.toImmutableCopyOrEmptyOnNull(changes);
@@ -37,11 +40,12 @@ public final class CodeTFChangesetEntry {
     this.strategy = strategy;
     this.provisional = provisional;
     this.fixedFindings = CodeTFValidator.toImmutableCopyOrEmptyOnNull(fixedFindings);
+    this.fixQuality = fixQuality;
   }
 
   public CodeTFChangesetEntry(
       final String path, final String diff, final List<CodeTFChange> changes) {
-    this(path, diff, changes, null, null, false, null);
+    this(path, diff, changes, null, null, false, null, null);
   }
 
   public String getPath() {
@@ -70,6 +74,10 @@ public final class CodeTFChangesetEntry {
 
   public boolean isProvisional() {
     return provisional;
+  }
+
+  public FixQuality getFixQuality() {
+    return fixQuality;
   }
 
   /** Fixed findings that are not associated with any particular change */
