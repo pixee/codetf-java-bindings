@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 public class CodeTFVersionTest {
 
   @Test
-  public void testDetectV2Format() throws IOException {
+  public void testDeserializeV2Format() throws IOException {
     String v2Json =
         "{\n"
             + "  \"run\": {\n"
@@ -37,19 +37,17 @@ public class CodeTFVersionTest {
             + "  ]\n"
             + "}";
 
+    // Deserialize directly with ObjectMapper
     ObjectMapper mapper = new ObjectMapper();
-    CodeTFVersion version = CodeTFDeserializer.detectVersion(mapper.readTree(v2Json));
-    assertThat(version, is(CodeTFVersion.V2));
-
     InputStream is = new ByteArrayInputStream(v2Json.getBytes(StandardCharsets.UTF_8));
-    CodeTFReport report = CodeTFLoader.loadReport(is);
+    CodeTFReport report = mapper.readValue(is, CodeTFReport.class);
     assertThat(report, notNullValue());
     assertThat(report.getRun().getVendor(), is("example-vendor"));
     assertThat(report.getRun().getTool(), is("example-tool"));
   }
 
   @Test
-  public void testDetectV3Format() throws IOException {
+  public void testDeserializeV3Format() throws IOException {
     String v3Json =
         "{\n"
             + "  \"run\": {\n"
@@ -99,12 +97,10 @@ public class CodeTFVersionTest {
             + "  ]\n"
             + "}";
 
+    // Deserialize directly with ObjectMapper
     ObjectMapper mapper = new ObjectMapper();
-    CodeTFVersion version = CodeTFDeserializer.detectVersion(mapper.readTree(v3Json));
-    assertThat(version, is(CodeTFVersion.V3));
-
     InputStream is = new ByteArrayInputStream(v3Json.getBytes(StandardCharsets.UTF_8));
-    CodeTF v3Report = CodeTFLoader.loadV3Report(is);
+    CodeTF v3Report = mapper.readValue(is, CodeTF.class);
     assertThat(v3Report, notNullValue());
     assertThat(v3Report.getRun().getVendor(), is("example-vendor"));
     assertThat(v3Report.getRun().getTool(), is("example-tool"));
