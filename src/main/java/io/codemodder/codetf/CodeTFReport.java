@@ -5,7 +5,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
-/** Top level reporting object. This is the root object to be deserialized from an input stream. */
+/**
+ * Top level reporting object for CodeTF v2. This is the root object to be deserialized from an
+ * input stream.
+ *
+ * <p>Applications should deserialize this object using a centralized ObjectMapper:
+ *
+ * <pre>{@code
+ * ObjectMapper mapper = new ObjectMapper();
+ * // Configure the mapper as needed
+ * CodeTFReport report = mapper.readValue(inputStream, CodeTFReport.class);
+ * }</pre>
+ */
 public final class CodeTFReport {
 
   private final CodeTFRun run;

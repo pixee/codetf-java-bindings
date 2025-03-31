@@ -32,9 +32,11 @@ implementation("io.codemodder:codetf-java:4.5.0")
 
 ## Using in your project
 
+This library provides properly annotated data classes for both CodeTF v2 and v3 formats. 
+You should choose which format to use based on your requirements and explicitly deserialize to that format.
+
 ### Working with original CodeTF format (v2)
 
-Using Jackson directly:
 ```java
 ObjectMapper mapper = new ObjectMapper();
 CodeTFReport report = mapper.readValue(codetfFile, CodeTFReport.class);
@@ -42,19 +44,12 @@ CodeTFReport report = mapper.readValue(codetfFile, CodeTFReport.class);
 
 ### Working with the new CodeTF v3 format
 
-Using the CodeTFLoader utility (recommended):
 ```java
-// Auto-detect format version and load as v2 format (backward compatibility)
-CodeTFReport report = CodeTFLoader.loadReport(inputStream);
-
-// Explicitly load as v3 format
-io.codemodder.codetf.v3.CodeTF v3Report = CodeTFLoader.loadV3Report(inputStream);
-
-// Detect format version
-CodeTFVersion version = CodeTFLoader.detectVersion(inputStream);
+ObjectMapper mapper = new ObjectMapper();
+io.codemodder.codetf.v3.CodeTF v3Report = mapper.readValue(codetfFile, io.codemodder.codetf.v3.CodeTF.class);
 ```
 
-The library automatically detects the format version based on the JSON structure, so you can use the same loading code for both formats.
+This approach allows applications to use their own centralized ObjectMapper with custom configurations.
 
 ## Running Formatter
 

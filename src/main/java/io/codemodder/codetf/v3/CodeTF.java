@@ -9,6 +9,14 @@ import java.util.Objects;
 /**
  * Top level reporting object for CodeTF v3. This is the root object to be deserialized from an
  * input stream.
+ *
+ * <p>Applications should deserialize this object using a centralized ObjectMapper:
+ *
+ * <pre>{@code
+ * ObjectMapper mapper = new ObjectMapper();
+ * // Configure the mapper as needed
+ * CodeTF report = mapper.readValue(inputStream, CodeTF.class);
+ * }</pre>
  */
 public final class CodeTF {
   private final Run run;

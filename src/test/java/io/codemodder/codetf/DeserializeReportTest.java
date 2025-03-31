@@ -24,9 +24,11 @@ final class DeserializeReportTest {
 
   @Test
   void it_deserializes_basic_report() throws IOException {
+    // Deserialize using direct ObjectMapper
     File file = new File("src/test/resources/basic.codetf.json");
     CodeTFReport report = mapper.readValue(file, CodeTFReport.class);
 
+    // Verify deserialization produces valid results
     CodeTFRun run = report.getRun();
     assertThat(run.getCommandLine(), equalTo("pixee change . --dry-run"));
     assertThat(run.getElapsed(), equalTo(105024L));
@@ -75,8 +77,11 @@ final class DeserializeReportTest {
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     final CodeTFReport report;
     try (var is = DeserializeReportTest.class.getResourceAsStream("/semgrep.codetf.json")) {
+      // Using direct ObjectMapper with FAIL_ON_UNKNOWN_PROPERTIES disabled
       report = mapper.readValue(is, CodeTFReport.class);
     }
+
+    // Ensure results are valid
     for (final CodeTFResult result : report.getResults()) {
       for (CodeTFChangesetEntry entry : result.getChangeset()) {
         assertThat(entry.getFixedFindings(), notNullValue());
@@ -92,6 +97,7 @@ final class DeserializeReportTest {
     final CodeTFReport report;
     try (var is =
         DeserializeReportTest.class.getResourceAsStream("/no_changes_but_results.codetf.json")) {
+      // Using direct ObjectMapper
       report = mapper.readValue(is, CodeTFReport.class);
     }
     assertThat(report.hasCodeChanges(), equalTo(false));
