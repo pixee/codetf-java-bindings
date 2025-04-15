@@ -35,8 +35,8 @@ public final class CodeTFRun {
     this.tool = CodeTFValidator.requireNonBlank(tool);
     this.version = CodeTFValidator.requireNonBlank(version);
     this.commandLine = Objects.requireNonNull(commandLine);
-    if (elapsed <= 0) {
-      throw new IllegalArgumentException("elapsed must be a positive value");
+    if (elapsed < 0) {
+      throw new IllegalArgumentException("elapsed must be a non-negative value");
     }
     this.elapsed = elapsed;
     this.directory = CodeTFValidator.requireNonBlank(directory);
